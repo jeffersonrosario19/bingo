@@ -80,6 +80,61 @@
       background-color: #6c757d;
       cursor: not-allowed;
     }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.25);
+    }
+
+    .modal-header {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .modal label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .modal-buttons {
+      margin-top: 15px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-cancelar {
+      background-color: #dc3545;
+    }
+
+    .btn-confirmar {
+      background-color: #007bff;
+    }
   </style>
 </head>
 <body>
@@ -97,7 +152,30 @@
     <em>Carregando status das cartelas...</em>
   </div>
 
+  <!-- Modal do Formulário -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        Reservar cartela <span id="modal-cartela-numero"></span>
+      </div>
+      <form id="form-reserva">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" required>
+
+        <label for="telefone">Telefone</label>
+        <input type="text" id="telefone" required>
+
+        <div class="modal-buttons">
+          <button type="button" class="btn btn-cancelar" onclick="fecharModal()">Cancelar</button>
+          <button type="submit" class="btn btn-confirmar">Confirmar Reserva</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
+    let cartelaSelecionada = null;
+
     function carregarStatus() {
       fetch('status.csv')
         .then(response => {
@@ -132,9 +210,28 @@
     }
 
     function abrirFormulario(numero) {
-      alert(`Abrir formulário para reservar a cartela ${numero}`);
-      // Aqui você pode substituir o alert por um modal ou redirecionamento
+      cartelaSelecionada = numero;
+      document.getElementById('modal-cartela-numero').textContent = numero;
+      document.getElementById('modal').style.display = 'block';
     }
+
+    function fecharModal() {
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('form-reserva').reset();
+    }
+
+    document.getElementById('form-reserva').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const nome = document.getElementById('nome').value;
+      const telefone = document.getElementById('telefone').value;
+
+      // Simula o envio da reserva
+      alert(`Reserva confirmada!\nCartela: ${cartelaSelecionada}\nNome: ${nome}\nTelefone: ${telefone}`);
+
+      // Aqui você poderia salvar os dados via API ou gerar uma nova linha no CSV
+
+      fecharModal();
+    });
 
     carregarStatus();
   </script>
