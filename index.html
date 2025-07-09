@@ -45,17 +45,9 @@
       font-weight: bold;
     }
 
-    .livre {
-      color: green;
-    }
-
-    .reservada {
-      color: orange;
-    }
-
-    .vendida {
-      color: gray;
-    }
+    .livre { color: green; }
+    .reservada { color: orange; }
+    .vendida { color: gray; }
 
     button {
       padding: 8px 12px;
@@ -75,32 +67,53 @@
       cursor: not-allowed;
     }
 
-    /* Formulário externo */
-    #formulario {
-      max-width: 400px;
-      margin: 40px auto;
+    /* Modal */
+    #popup-bg {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #popup {
       background: white;
       padding: 20px;
       border-radius: 8px;
-      display: none;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      position: relative;
     }
 
-    #formulario h2 {
+    #popup h2 {
+      margin-top: 0;
       text-align: center;
     }
 
-    #formulario input {
+    #popup input {
       width: 100%;
       padding: 8px;
-      margin-top: 10px;
+      margin: 8px 0;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
 
-    #formulario button {
-      margin-top: 15px;
-      background-color: #007bff;
+    #popup button[type="submit"] {
+      background: #007bff;
+    }
+
+    #fechar {
+      position: absolute;
+      top: 10px; right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -112,14 +125,18 @@
   <em>Carregando cartelas...</em>
 </div>
 
-<div id="formulario">
-  <h2>Reservar Cartela <span id="cartelaSelecionada"></span></h2>
-  <form onsubmit="enviarWhatsApp(event)">
-    <input type="text" id="nome" placeholder="Nome completo" required>
-    <input type="text" id="endereco" placeholder="Endereço" required>
-    <input type="text" id="cidade" placeholder="Cidade" required>
-    <button type="submit">Confirmar Reserva via WhatsApp</button>
-  </form>
+<!-- Modal Formulário -->
+<div id="popup-bg">
+  <div id="popup">
+    <button id="fechar" onclick="fecharFormulario()">×</button>
+    <h2>Reservar Cartela <span id="cartelaSelecionada"></span></h2>
+    <form onsubmit="enviarWhatsApp(event)">
+      <input type="text" id="nome" placeholder="Nome completo" required>
+      <input type="text" id="endereco" placeholder="Endereço" required>
+      <input type="text" id="cidade" placeholder="Cidade" required>
+      <button type="submit">Confirmar Reserva via WhatsApp</button>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -136,6 +153,7 @@
       const [numeroStr, statusRaw] = linha.split(',');
       const numero = parseInt(numeroStr);
       const status = statusRaw.trim().toLowerCase();
+      const numeroFormatado = numero.toString().padStart(3, '0');
 
       const card = document.createElement('div');
       card.className = 'card';
@@ -155,13 +173,15 @@
       const statusClass = statusClasses[status] || '';
       const statusText = statusLabels[status] || 'Desconhecido';
 
+      const imagemSrc = `cartela${numeroFormatado}.png`;
+
       const botao = (status === 'livre') ?
         `<button class="btn-livre" onclick="abrirFormulario(${numero})">Reservar</button>` :
         `<button class="btn-desabilitado" disabled>${statusText}</button>`;
 
       card.innerHTML = `
-        <h3>Cartela ${numero.toString().padStart(2, '0')}</h3>
-        <img src="icone.png" alt="Cartela ${numero}">
+        <h3>Cartela ${numeroFormatado}</h3>
+        <img src="${imagemSrc}" alt="Cartela ${numero}">
         <div class="status ${statusClass}">${statusText}</div>
         ${botao}
       `;
@@ -172,9 +192,13 @@
 
   function abrirFormulario(numero) {
     cartelaAtual = numero;
-    document.getElementById('cartelaSelecionada').textContent = numero.toString().padStart(2, '0');
-    document.getElementById('formulario').style.display = 'block';
-    document.getElementById('formulario').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('cartelaSelecionada').textContent = numero.toString().padStart(3, '0');
+    document.getElementById('popup-bg').style.display = 'flex';
+  }
+
+  function fecharFormulario() {
+    document.getElementById('popup-bg').style.display = 'none';
+    document.querySelector('#popup form').reset();
   }
 
   function enviarWhatsApp(event) {
@@ -183,15 +207,12 @@
     const endereco = document.getElementById('endereco').value.trim();
     const cidade = document.getElementById('cidade').value.trim();
 
-    const mensagem = `Olá! Quero reservar a Cartela ${cartelaAtual.toString().padStart(2, '0')}.\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}`;
+    const mensagem = `Olá! Quero reservar a Cartela ${cartelaAtual.toString().padStart(3, '0')}.\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}`;
     const telefone = '5591980499217';
     const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
 
     window.open(url, '_blank');
-
-    // Resetar formulário e esconder
-    document.getElementById('formulario').reset();
-    document.getElementById('formulario').style.display = 'none';
+    fecharFormulario();
   }
 
   carregarCartelas();
