@@ -27,26 +27,22 @@
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       padding: 15px;
-      width: 280px;
+      width: 220px;
       box-sizing: border-box;
-      position: relative;
+      text-align: center;
     }
 
     .card img {
       width: 100%;
+      max-height: 150px;
+      object-fit: contain;
       border-radius: 6px;
       margin-bottom: 10px;
     }
 
-    .card h3 {
-      margin: 0 0 10px;
-      text-align: center;
-    }
-
     .status {
+      margin: 10px 0;
       font-weight: bold;
-      text-align: center;
-      margin-bottom: 10px;
     }
 
     .livre {
@@ -61,53 +57,74 @@
       color: gray;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    input {
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
     button {
-      padding: 8px;
+      padding: 8px 12px;
       border: none;
       border-radius: 4px;
       font-weight: bold;
       cursor: pointer;
+      color: white;
     }
 
     .btn-livre {
       background-color: #28a745;
-      color: white;
     }
 
-    .btn-reservada {
-      background-color: #fd7e14;
-      color: white;
-      cursor: not-allowed;
-    }
-
-    .btn-vendida {
+    .btn-desabilitado {
       background-color: #6c757d;
-      color: white;
       cursor: not-allowed;
+    }
+
+    /* Formulário externo */
+    #formulario {
+      max-width: 400px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      display: none;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    #formulario h2 {
+      text-align: center;
+    }
+
+    #formulario input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #formulario button {
+      margin-top: 15px;
+      background-color: #007bff;
     }
   </style>
 </head>
 <body>
 
-<h1>Escolha Sua Cartela</h1>
+<h1>Escolha sua Cartela</h1>
 
 <div class="grid" id="cartelas">
   <em>Carregando cartelas...</em>
 </div>
 
+<div id="formulario">
+  <h2>Reservar Cartela <span id="cartelaSelecionada"></span></h2>
+  <form onsubmit="enviarWhatsApp(event)">
+    <input type="text" id="nome" placeholder="Nome completo" required>
+    <input type="text" id="endereco" placeholder="Endereço" required>
+    <input type="text" id="cidade" placeholder="Cidade" required>
+    <button type="submit">Confirmar Reserva via WhatsApp</button>
+  </form>
+</div>
+
 <script>
+  let cartelaAtual = null;
+
   async function carregarCartelas() {
     const response = await fetch('status.csv');
     const texto = await response.text();
@@ -116,57 +133,65 @@
     container.innerHTML = '';
 
     linhas.forEach(linha => {
-      const [numero, statusRaw] = linha.split(',');
+      const [numeroStr, statusRaw] = linha.split(',');
+      const numero = parseInt(numeroStr);
       const status = statusRaw.trim().toLowerCase();
-      const id = `cartela-${numero}`;
+
       const card = document.createElement('div');
       card.className = 'card';
 
-      const statusTexto = {
+      const statusClasses = {
+        livre: 'livre',
+        reservada: 'reservada',
+        vendida: 'vendida'
+      };
+
+      const statusLabels = {
         livre: 'Disponível',
         reservada: 'Reservada',
         vendida: 'Vendida'
       };
 
-      let statusClass = status;
-      let botaoHTML = '';
+      const statusClass = statusClasses[status] || '';
+      const statusText = statusLabels[status] || 'Desconhecido';
 
-      if (status === 'livre') {
-        botaoHTML = `
-          <form onsubmit="enviarReserva(event, ${numero})">
-            <input type="text" name="nome" placeholder="Nome completo" required>
-            <input type="text" name="endereco" placeholder="Endereço" required>
-            <input type="text" name="cidade" placeholder="Cidade" required>
-            <button type="submit" class="btn-livre">Reservar</button>
-          </form>`;
-      } else if (status === 'reservada') {
-        botaoHTML = `<button class="btn-reservada" disabled>Reservada</button>`;
-      } else if (status === 'vendida') {
-        botaoHTML = `<button class="btn-vendida" disabled>Vendida</button>`;
-      }
+      const botao = (status === 'livre') ?
+        `<button class="btn-livre" onclick="abrirFormulario(${numero})">Reservar</button>` :
+        `<button class="btn-desabilitado" disabled>${statusText}</button>`;
 
       card.innerHTML = `
-        <img src="cartelas/cartela${numero}.png" alt="Cartela ${numero}">
-        <h3>Cartela ${numero}</h3>
-        <div class="status ${statusClass}">${statusTexto[status]}</div>
-        ${botaoHTML}
+        <h3>Cartela ${numero.toString().padStart(2, '0')}</h3>
+        <img src="icone.png" alt="Cartela ${numero}">
+        <div class="status ${statusClass}">${statusText}</div>
+        ${botao}
       `;
 
       container.appendChild(card);
     });
   }
 
-  function enviarReserva(event, numero) {
-    event.preventDefault();
-    const form = event.target;
-    const nome = form.nome.value.trim();
-    const endereco = form.endereco.value.trim();
-    const cidade = form.cidade.value.trim();
+  function abrirFormulario(numero) {
+    cartelaAtual = numero;
+    document.getElementById('cartelaSelecionada').textContent = numero.toString().padStart(2, '0');
+    document.getElementById('formulario').style.display = 'block';
+    document.getElementById('formulario').scrollIntoView({ behavior: 'smooth' });
+  }
 
-    const msg = `Olá! Gostaria de reservar a cartela ${numero}.\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}`;
-    const telefone = '5591980499217'; // com DDI +55
-    const link = `https://wa.me/${telefone}?text=${encodeURIComponent(msg)}`;
-    window.open(link, '_blank');
+  function enviarWhatsApp(event) {
+    event.preventDefault();
+    const nome = document.getElementById('nome').value.trim();
+    const endereco = document.getElementById('endereco').value.trim();
+    const cidade = document.getElementById('cidade').value.trim();
+
+    const mensagem = `Olá! Quero reservar a Cartela ${cartelaAtual.toString().padStart(2, '0')}.\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}`;
+    const telefone = '5591980499217';
+    const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+
+    window.open(url, '_blank');
+
+    // Resetar formulário e esconder
+    document.getElementById('formulario').reset();
+    document.getElementById('formulario').style.display = 'none';
   }
 
   carregarCartelas();
