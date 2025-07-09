@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cartelas de Bingo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f8f8f8;
+    }
+    h1 {
+      text-align: center;
+    }
+    .cartelas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    .cartela {
+      width: 120px;
+      padding: 15px;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
+    }
+    .cartela img {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+    .cartela button {
+      padding: 5px 10px;
+      background-color: #28a745;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .vendida, .reservada {
+      background-color: #ccc;
+      color: #333;
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .status {
+      margin-top: 5px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Cartelas Disponíveis</h1>
+<div class="cartelas" id="cartelasContainer">Carregando...</div>
+
+<script>
+  async function carregarCartelas() {
+    const resposta = await fetch('status.csv');
+    const texto = await resposta.text();
+
+    const linhas = texto.trim().split('\n').slice(1); // Remove o cabeçalho
+    const container = document.getElementById('cartelasContainer');
+    container.innerHTML = '';
+
+    linhas.forEach(linha => {
+      const [numero, status] = linha.split(',');
+
+      const div = document.createElement('div');
+      div.className = 'cartela';
+
+      const img = document.createElement('img');
+      img.src = 'icone.png'; // imagem genérica
+      img.alt = `Cartela ${numero}`;
+      div.appendChild(img);
+
+      const titulo = document.createElement('div');
+      titulo.innerText = `Cartela ${numero}`;
+      div.appendChild(titulo);
+
+      if (status === 'livre') {
+        const botao = document.createElement('button');
+        botao.innerText = 'Reservar';
+        botao.onclick = () => {
+          const msg = `Olá! Gostaria de reservar a cartela número ${numero}. Meus dados: Nome completo, Endereço, Cidade, Telefone.`;
+          const zapURL = `https://wa.me/5591980499217?text=${encodeURIComponent(msg)}`;
+          window.open(zapURL, '_blank');
+        };
+        div.appendChild(botao);
+      } else {
+        const statusLabel = document.createElement('div');
+        statusLabel.className = status === 'vendida' ? 'vendida' : 'reservada';
+        statusLabel.innerText = status.toUpperCase();
+        div.appendChild(statusLabel);
+      }
+
+      container.appendChild(div);
+    });
+  }
+
+  carregarCartelas();
+</script>
+
+</body>
+</html>

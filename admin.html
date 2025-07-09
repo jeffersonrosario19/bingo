@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Controle de Cartelas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f2f2f2;
+    }
+    h1 {
+      text-align: center;
+    }
+    .cartelas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .cartela {
+      width: 140px;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .livre {
+      color: green;
+    }
+    .vendida {
+      color: red;
+    }
+    .reservada {
+      color: orange;
+    }
+    .comando {
+      margin-top: 5px;
+      font-size: 0.75em;
+      color: #555;
+    }
+    .copy {
+      margin-top: 5px;
+      font-size: 0.75em;
+      color: blue;
+      cursor: pointer;
+    }
+    .instrucoes {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Painel do Administrador</h1>
+
+<div class="instrucoes">
+  ✅ Para confirmar uma cartela como <strong>vendida</strong> ou <strong>reservada</strong>, edite o arquivo <code>status.csv</code> no repositório.<br>
+  🛠️ Use os comandos de linha abaixo para saber o que alterar:<br>
+  <code>50,vendida</code> ou <code>23,reservada</code>
+</div>
+
+<div class="cartelas" id="cartelasContainer">Carregando...</div>
+
+<script>
+  async function carregarCartelas() {
+    const resposta = await fetch('status.csv');
+    const texto = await resposta.text();
+
+    const linhas = texto.trim().split('\n').slice(1); // remove o cabeçalho
+    const container = document.getElementById('cartelasContainer');
+    container.innerHTML = '';
+
+    linhas.forEach(linha => {
+      const [numero, status] = linha.split(',');
+
+      const div = document.createElement('div');
+      div.className = 'cartela';
+
+      const titulo = document.createElement('div');
+      titulo.innerHTML = `<strong>Cartela ${numero}</strong>`;
+      div.appendChild(titulo);
+
+      const statusEl = document.createElement('div');
+      statusEl.className = status;
+      statusEl.innerText = `Status: ${status}`;
+      div.appendChild(statusEl);
+
+      const comando = document.createElement('div');
+      comando.className = 'comando';
+      comando.innerText = `${numero},vendida`;
+      div.appendChild(comando);
+
+      const copiar = document.createElement('div');
+      copiar.className = 'copy';
+      copiar.innerText = '📋 Copiar linha para edição';
+      copiar.onclick = () => {
+        navigator.clipboard.writeText(`${numero},vendida`);
+        copiar.innerText = '✅ Copiado!';
+        setTimeout(() => { copiar.innerText = '📋 Copiar linha para edição'; }, 1500);
+      };
+      div.appendChild(copiar);
+
+      container.appendChild(div);
+    });
+  }
+
+  carregarCartelas();
+</script>
+
+</body>
+</html>
