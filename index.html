@@ -47,12 +47,38 @@
     }
 
     .lista li {
-      padding: 8px 0;
+      padding: 10px 0;
       border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .lista li:last-child {
       border-bottom: none;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-livre {
+      background-color: #28a745;
+    }
+
+    .btn-reservada {
+      background-color: #fd7e14;
+      cursor: not-allowed;
+    }
+
+    .btn-vendida {
+      background-color: #6c757d;
+      cursor: not-allowed;
     }
   </style>
 </head>
@@ -81,8 +107,21 @@
         .then(csv => {
           const linhas = csv.trim().split('\n');
           const listaHTML = linhas.map(linha => {
-            const [numero, status] = linha.split(',');
-            return `<li><strong>Cartela ${numero}</strong>: ${status.toUpperCase()}</li>`;
+            const [numero, statusRaw] = linha.split(',');
+            const status = statusRaw.trim().toLowerCase();
+
+            let botao = '';
+            if (status === 'livre') {
+              botao = `<button class="btn btn-livre" onclick="abrirFormulario(${numero})">Reservar</button>`;
+            } else if (status === 'reservada') {
+              botao = `<button class="btn btn-reservada" disabled>Reservado</button>`;
+            } else if (status === 'vendida') {
+              botao = `<button class="btn btn-vendida" disabled>Vendido</button>`;
+            } else {
+              botao = `<em>Status desconhecido</em>`;
+            }
+
+            return `<li><strong>Cartela ${numero}</strong>${botao}</li>`;
           }).join('');
 
           document.getElementById('lista').innerHTML = `<ul>${listaHTML}</ul>`;
@@ -92,7 +131,11 @@
         });
     }
 
-    // Chama a função ao carregar a página
+    function abrirFormulario(numero) {
+      alert(`Abrir formulário para reservar a cartela ${numero}`);
+      // Aqui você pode substituir o alert por um modal ou redirecionamento
+    }
+
     carregarStatus();
   </script>
 </body>
