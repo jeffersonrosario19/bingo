@@ -5,177 +5,194 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cartelas Disponíveis</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-    }
+    /* Estilo base da página */
+body {
+  font-family: sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
+/* Título centralizado */
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
 
-    .grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
+/* Grade de cartelas */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
 
-    .card {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 15px;
-      width: 220px;
-      box-sizing: border-box;
-      text-align: center;
-    }
+/* Cartão individual de cartela */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 15px;
+  width: 220px;
+  box-sizing: border-box;
+  text-align: center;
+}
 
-    .card img {
-      width: 100%;
-      max-height: 150px;
-      object-fit: contain;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
+/* Imagem da cartela */
+.card img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
 
-    .status {
-      margin: 10px 0;
-      font-weight: bold;
-    }
+/* Estilo de status (disponível, reservada, vendida) */
+.status {
+  margin: 10px 0;
+  font-weight: bold;
+}
 
-    .livre { color: green; }
-    .reservada { color: orange; }
-    .vendida { color: gray; }
+.livre { color: green; }
+.reservada { color: orange; }
+.vendida { color: gray; }
 
-    button {
-      padding: 8px 12px;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      color: white;
-    }
+/* Botões */
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+}
 
-    .btn-livre {
-      background-color: #28a745;
-    }
+.btn-livre {
+  background-color: #28a745;
+}
 
-    .btn-desabilitado {
-      background-color: #6c757d;
-      cursor: not-allowed;
-    }
+.btn-desabilitado {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
 
-    /* Modal */
-    #popup-bg {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.6);
-      z-index: 999;
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.3s ease-in-out;
-    }
+/* Fundo escuro do modal */
+#popup-bg {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
 
-    #popup {
-      margin-left: 10px;
-      margin-right: 10px;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 400px;
-      position: relative;
-    }
+/* Caixa do popup */
+#popup {
+  margin-left: 10px;
+  margin-right: 10px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  box-sizing: border-box; /* garante que padding/margin não extrapolem */
+  overflow-wrap: break-word;
+}
 
-    #popup h2 {
-      margin-top: 0;
-      text-align: center;
-    }
+/* Título do popup */
+#popup h2 {
+  margin-top: 0;
+  text-align: center;
+}
 
-    #popup input {
-      width: 100%;
-      padding: 8px;
-      margin: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+/* Campos de entrada do formulário */
+#popup input {
+  width: calc(100% - 16px); /* evita ultrapassar a caixa */
+  padding: 10px;
+  margin: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 
-    #popup button[type="submit"] {
-      background: #007bff;
-    }
+/* Botão de envio do formulário */
+#popup button[type="submit"] {
+  background: #007bff;
+}
 
-    #fechar {
-      position: absolute;
-      top: 10px; right: 15px;
-      background: transparent;
-      border: none;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+/* Botão de fechar "X" no popup */
+#fechar {
+  position: absolute;
+  top: 10px; right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    /* Animação do popup */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
+/* Animação do popup */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
-    /* Responsivo */
-    @media (max-width: 600px) {
-      .grid {
-        flex-direction: column;
-        align-items: center;
-      }
+/* Estilos específicos para telas pequenas */
+@media (max-width: 600px) {
+  .grid {
+    flex-direction: column;
+    align-items: center;
+  }
 
-      .card {
-        width: 90%;
-      }
+  .card {
+    width: 90%;
+  }
 
-      #popup {
-        width: 95%;
-        max-height: 95%;
-        overflow-y: auto;
-      }
+  #popup {
+    width: 95%;
+    max-height: 95%;
+    overflow-y: auto;
+  }
 
-      #popup input {
-        font-size: 16px;
-      }
+  #popup input {
+    font-size: 16px;
+    padding: 10px;
+    margin: 6px 8px;
+  }
 
-      button {
-        font-size: 16px;
-      }
+  button {
+    font-size: 16px;
+  }
 
-      #popup h2 {
-        font-size: 20px;
-      }
+  #popup h2 {
+    font-size: 20px;
+  }
 
-      /* Botão flutuante */
-      #botao-mobile {
-        position: fixed;
-        bottom: 15px;
-        right: 15px;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 50px;
-        padding: 14px 18px;
-        font-size: 14px;
-        font-weight: bold;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        z-index: 1000;
-        cursor: pointer;
-      }
+  /* Botão flutuante mobile */
+  #botao-mobile {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    cursor: pointer;
+  }
 
-      #botao-mobile:hover {
-        background-color: #0056b3;
-      }
-    }
+  #botao-mobile:hover {
+    background-color: #0056b3;
+  }
+}
   </style>
 </head>
 <body>
