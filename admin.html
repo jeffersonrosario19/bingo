@@ -2,52 +2,62 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Painel Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Administrador</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f3f3f3; }
-    h1 { text-align: center; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 8px; border: 1px solid #ccc; text-align: center; }
-    .livre { background: #d4ffd4; }
-    .reservada { background: #fff4c4; }
-    .vendida { background: #ffd4d4; }
-    button { padding: 5px 10px; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f3f3f3;
+    }
+    h1 {
+      text-align: center;
+    }
+    .info {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+    .info code {
+      background: #eee;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .lista {
+      margin-top: 20px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
-<h1>Painel do Administrador</h1>
-<p>Atualize o status no arquivo <code>status.csv</code> via GitHub e recarregue esta página.</p>
-<table>
-  <thead>
-    <tr><th>Cartela</th><th>Status</th><th>Ação</th></tr>
-  </thead>
-  <tbody id="tabela"></tbody>
-</table>
-<script>
-  async function carregarTabela() {
-    const res = await fetch('status.csv');
-    const texto = await res.text();
-    const linhas = texto.trim().split('\n').slice(1);
-    const tbody = document.getElementById('tabela');
-    linhas.forEach(linha => {
-      const [numero, status] = linha.split(',');
-      const tr = document.createElement('tr');
-      tr.className = status;
-      tr.innerHTML = `
-        <td>${numero}</td>
-        <td>${status.toUpperCase()}</td>
-        <td><button onclick="copiar('${numero},${status}')">Copiar linha</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
+  <h1>Painel do Administrador</h1>
+  <div class="info">
+    <p>Para marcar uma cartela como <strong>reservada</strong> ou <strong>vendida</strong>, edite o arquivo <code>status.csv</code> neste repositório.</p>
+    <p>Exemplo de linhas que você pode adicionar:</p>
+    <code>23,reservada</code><br>
+    <code>50,vendida</code>
+    <p>Após salvar, a página pública refletirá automaticamente essas mudanças.</p>
+  </div>
 
-  function copiar(texto) {
-    navigator.clipboard.writeText(texto).then(() => alert('Linha copiada: ' + texto));
-  }
+  <div class="lista" id="lista">
+    <em>Carregando status das cartelas...</em>
+  </div>
 
-  carregarTabela();
-</script>
+  <script>
+    fetch('status.csv')
+      .then(response => response.text())
+      .then(csv => {
+        const linhas = csv.trim().split('\n');
+        const div = document.getElementById('lista');
+        div.innerHTML = '';
+        linhas.forEach(linha => {
+          const [numero, status] = linha.split(',');
+          const linhaHTML = `<div><strong>Cartela ${numero}</strong>: ${status.toUpperCase()}</div>`;
+          div.innerHTML += linhaHTML;
+        });
+      });
+  </script>
 </body>
 </html>
