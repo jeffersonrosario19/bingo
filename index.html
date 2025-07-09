@@ -78,6 +78,7 @@
       z-index: 999;
       justify-content: center;
       align-items: center;
+      animation: fadeIn 0.3s ease-in-out;
     }
 
     #popup {
@@ -115,39 +116,63 @@
       font-weight: bold;
       cursor: pointer;
     }
+
     /* Animação do popup */
-#popup-bg {
-  animation: fadeIn 0.3s ease-in-out;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+    /* Responsivo */
+    @media (max-width: 600px) {
+      .grid {
+        flex-direction: column;
+        align-items: center;
+      }
 
-/* Botão flutuante mobile */
-@media (max-width: 600px) {
-  #botao-mobile {
-    position: fixed;
-    bottom: 15px;
-    right: 15px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 14px 18px;
-    font-size: 14px;
-    font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    z-index: 1000;
-    cursor: pointer;
-  }
+      .card {
+        width: 90%;
+      }
 
-  #botao-mobile:hover {
-    background-color: #0056b3;
-  }
-}
+      #popup {
+        width: 95%;
+        max-height: 95%;
+        overflow-y: auto;
+      }
 
+      #popup input {
+        font-size: 16px;
+      }
+
+      button {
+        font-size: 16px;
+      }
+
+      #popup h2 {
+        font-size: 20px;
+      }
+
+      /* Botão flutuante */
+      #botao-mobile {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 14px 18px;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 1000;
+        cursor: pointer;
+      }
+
+      #botao-mobile:hover {
+        background-color: #0056b3;
+      }
+    }
   </style>
 </head>
 <body>
@@ -167,10 +192,18 @@
       <input type="text" id="nome" placeholder="Nome completo" required>
       <input type="text" id="endereco" placeholder="Endereço" required>
       <input type="text" id="cidade" placeholder="Cidade" required>
-      <button type="submit">Confirmar Reserva via WhatsApp</button>
+      <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 15px;">
+        <button type="button" onclick="fecharFormulario()" style="flex:1; background: #6c757d;">Voltar</button>
+        <button type="submit" style="flex:1; background: #007bff;">Confirmar</button>
+      </div>
     </form>
   </div>
 </div>
+
+<!-- Botão flutuante para mobile -->
+<button id="botao-mobile" onclick="alert('Aqui você poderá ver suas reservas no futuro!')">
+  Ver Minhas Cartelas
+</button>
 
 <script>
   let cartelaAtual = null;
@@ -182,7 +215,7 @@
     const container = document.getElementById('cartelas');
     container.innerHTML = '';
 
-    linhas.forEach(linha => {
+    linhas.slice(1).forEach(linha => { // Ignora cabeçalho
       const [numeroStr, statusRaw] = linha.split(',');
       const numero = parseInt(numeroStr);
       const status = statusRaw.trim().toLowerCase();
@@ -252,9 +285,4 @@
 </script>
 
 </body>
-  <!-- Botão flutuante no mobile -->
-<button id="botao-mobile" onclick="alert('Aqui você poderá ver suas reservas no futuro!')">
-  Ver Minhas Cartelas
-</button>
-
 </html>
