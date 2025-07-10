@@ -9,6 +9,7 @@
       font-family: sans-serif;
       background: #f4f4f4;
       padding: 20px;
+      padding-bottom: 80px; /* Espaço extra para o botão fixo */
     }
     h1 {
       text-align: center;
@@ -50,23 +51,24 @@
     .livre { color: green; }
     .reservada { color: orange; }
     .vendida { color: gray; }
-    button {
-      padding: 8px 12px;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
+
+    #botaoFixo {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #28a745;
       color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: bold;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: none;
     }
-    .btn-desabilitado {
-      background-color: #6c757d;
-      cursor: not-allowed;
-    }
-    #reservarSelecionadas {
-      display: block;
-      margin: 30px auto;
-      background: #007bff;
-    }
+
     #popup-bg {
       display: none;
       position: fixed;
@@ -115,7 +117,8 @@
 
 <h1>Escolha suas Cartelas</h1>
 <div class="grid" id="cartelas"><em>Carregando cartelas...</em></div>
-<button id="reservarSelecionadas" onclick="abrirFormulario()" disabled>Reservar Selecionadas</button>
+
+<button id="botaoFixo" onclick="abrirFormulario()">Reservar (0 cartelas)</button>
 
 <div id="popup-bg">
   <div id="popup">
@@ -155,7 +158,9 @@
         const numero = parseInt(numeroStr);
         const status = statusRaw.trim().toLowerCase();
         const numeroFormatado = numero.toString().padStart(3, '0');
-        const imagemSrc = `cartela${numeroFormatado}.png`;
+
+        const extensao = (numero >= 791 && numero <= 800) ? 'jpg' : 'png';
+        const imagemSrc = `cart${numero}.` + extensao;
 
         const card = document.createElement('div');
         card.className = 'card';
@@ -191,7 +196,14 @@
     } else {
       selecionadas = selecionadas.filter(n => n !== valor);
     }
-    document.getElementById('reservarSelecionadas').disabled = selecionadas.length === 0;
+
+    const botaoFixo = document.getElementById('botaoFixo');
+    if (selecionadas.length === 0) {
+      botaoFixo.style.display = 'none';
+    } else {
+      botaoFixo.style.display = 'block';
+      botaoFixo.textContent = `Reservar (${selecionadas.length} cartela${selecionadas.length > 1 ? 's' : ''})`;
+    }
   }
 
   function abrirFormulario() {
