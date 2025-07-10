@@ -296,8 +296,8 @@ button {
 const telefone = document.getElementById('telefone').value.trim();
 
     const mensagem = `Olá! Quero reservar a Cartela ${cartelaAtual.toString().padStart(3, '0')}.\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nTelefone: ${telefone}`;
-    const telefone = '5591980499217';
-    const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+    const whatsapNumero = '5591980499217';
+    const url = `https://wa.me/${whatsapNumero}?text=${encodeURIComponent(mensagem)}`;
 
     window.open(url, '_blank');
     fecharFormulario();
