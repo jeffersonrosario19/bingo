@@ -1,285 +1,308 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cartelas Disponíveis</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bingão do Caranguejo</title>
+  <meta name="description" content="Escolha sua cartela do Bingão do Caranguejo e concorra a prêmios incríveis!">
+  <meta property="og:title" content="Bingão do Caranguejo">
+  <meta property="og:description" content="Reserve cartelas e participe!">
+  <meta property="og:image" content="assets/cartaz.png">
   <style>
-    /* Estilo base da página */
-body {
-  font-family: sans-serif;
-  background: #f4f4f4;
-  padding: 20px;
-}
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      padding-bottom: 80px;
+    }
 
-/* Título centralizado */
-h1 {
-  text-align: center;
-  margin-bottom: 30px;
-}
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
 
-/* Grade de cartelas */
-.grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
+    .subtitulo {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 30px;
+      color: #555;
+    }
 
-/* Cartão individual de cartela */
-.card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  padding: 15px;
-  width: 220px;
-  box-sizing: border-box;
-  text-align: center;
-}
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
 
-/* Imagem da cartela */
-.card img {
-  width: 100%;
-  max-height: 150px;
-  object-fit: contain;
-  border-radius: 6px;
-  margin-bottom: 10px;
-}
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      width: 220px;
+      box-sizing: border-box;
+      text-align: center;
+      position: relative;
+    }
 
-/* Estilo de status (disponível, reservada, vendida) */
-.status {
-  margin: 10px 0;
-  font-weight: bold;
-}
+    .card input[type="checkbox"] {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      transform: scale(1.2);
+    }
 
-.livre { color: green; }
-.reservada { color: orange; }
-.vendida { color: gray; }
+    .card img {
+      width: 100%;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
 
-/* Botões */
-button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  color: white;
-}
+    .status {
+      margin: 10px 0;
+      font-weight: bold;
+    }
 
-.btn-livre {
-  background-color: #28a745;
-}
+    .livre { color: green; }
+    .reservada { color: orange; }
+    .vendida { color: gray; }
 
-.btn-desabilitado {
-  background-color: #6c757d;
-  cursor: not-allowed;
-}
+    #botaoFixo {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #28a745;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: bold;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: none;
+    }
 
-/* Fundo escuro do modal */
-#popup-bg {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.6);
-  z-index: 999;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.3s ease-in-out;
-}
+    #popup-bg {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
 
-/* Caixa do popup */
-#popup {
-  margin-left: 10px;
-  margin-right: 10px;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 400px;
-  position: relative;
-  box-sizing: border-box; /* garante que padding/margin não extrapolem */
-  overflow-wrap: break-word;
-}
+    #popup {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      margin: 10px;
+      box-sizing: border-box;
+      position: relative;
+    }
 
-/* Título do popup */
-#popup h2 {
-  margin-top: 0;
-  text-align: center;
-}
+    #listaSelecionadas {
+      max-height: 120px;
+      overflow-y: auto;
+      margin: 8px 0;
+      padding: 0 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      list-style: none;
+      font-size: 15px;
+    }
 
-/* Campos de entrada do formulário */
-#popup input {
-  width: calc(100% - 16px); /* evita ultrapassar a caixa */
-  padding: 10px;
-  margin: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
+    #listaSelecionadas li {
+      padding: 4px 0;
+      border-bottom: 1px solid #eee;
+    }
 
-/* Botão de envio do formulário */
-#popup button[type="submit"] {
-  background: #007bff;
-}
+    #popup input {
+      width: calc(100% - 16px);
+      padding: 10px;
+      margin: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
 
-/* Botão de fechar "X" no popup */
-#fechar {
-  position: absolute;
-  top: 10px; right: 15px;
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .btn-reservar {
+      width: calc(100% - 16px);
+      margin: 10px 8px 0 8px;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-/* Animação do popup */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+    .btn-reservar:hover {
+      background: #0056b3;
+    }
 
-/* Estilos específicos para telas pequenas */
-@media (max-width: 600px) {
-  .grid {
-    flex-direction: column;
-    align-items: center;
-  }
+    #fechar {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
 
-  .card {
-    width: 90%;
-  }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
 
-  #popup {
-    width: 95%;
-    max-height: 95%;
-    overflow-y: auto;
-  }
+    @media (max-width: 768px) {
+      .card { width: calc(50% - 20px); }
+    }
 
-  #popup input {
-    font-size: 16px;
-    padding: 10px;
-    margin: 6px 8px;
-  }
+    @media (max-width: 480px) {
+      .card { width: 100%; }
+    }
 
-  button {
-    font-size: 16px;
-  }
+    .botao-cartaz {
+      display: block;
+      margin: 0 auto 30px;
+      padding: 10px 20px;
+      background-color: #ff9800;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      font-size: 15px;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
 
-  #popup h2 {
-    font-size: 20px;
-  }
-
-  /* Botão flutuante mobile */
-  #botao-mobile {
-    position: fixed;
-    bottom: 15px;
-    right: 15px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 14px 18px;
-    font-size: 14px;
-    font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    z-index: 1000;
-    cursor: pointer;
-  }
-
-  #botao-mobile:hover {
-    background-color: #0056b3;
-  }
-}
+    .botao-cartaz:hover {
+      background-color: #e68900;
+    }
   </style>
 </head>
 <body>
 
-<h1>Escolha sua Cartela</h1>
+<h1>Bingão do Caranguejo</h1>
+<p class="subtitulo">Escolha já a sua cartela e concorra a valiosos prêmios!</p>
 
-<div class="grid" id="cartelas">
-  <em>Carregando cartelas...</em>
-</div>
+<a href="assets/cartaz.png" target="_blank" class="botao-cartaz">Ver Cartaz do Bingão</a>
 
-<!-- Modal Formulário -->
+<div class="grid" id="cartelas"><em>Carregando cartelas...</em></div>
+
+<button id="botaoFixo" onclick="abrirFormulario()">📱 Reservar (0 cartelas)</button>
+
 <div id="popup-bg">
   <div id="popup">
     <button id="fechar" onclick="fecharFormulario()">×</button>
-    <h2>Reservar Cartela <span id="cartelaSelecionada"></span></h2>
+    <h2>Reservar Cartelas</h2>
+    <p><strong>Selecionadas:</strong></p>
+    <ul id="listaSelecionadas"></ul>
     <form onsubmit="enviarWhatsApp(event)">
-      <input type="text" id="nome" placeholder="Nome completo" required>
-      <input type="text" id="endereco" placeholder="Endereço" required>
-      <input type="text" id="cidade" placeholder="Cidade" required>
-<input type="text" id="telefone" placeholder="Telefone" required>
-      <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 15px;">
-        <button type="button" onclick="fecharFormulario()" style="flex:1; background: #6c757d;">Voltar</button>
-        <button type="submit" style="flex:1; background: #007bff;">Confirmar</button>
-      </div>
+      <input type="text" id="nome" placeholder="Nome completo" aria-label="Nome completo" required>
+      <input type="text" id="endereco" placeholder="Endereço" aria-label="Endereço" required>
+      <input type="text" id="cidade" placeholder="Cidade" aria-label="Cidade" required>
+      <input type="text" id="contato" placeholder="Telefone (somente números e DDD)" aria-label="Telefone" required>
+      <button type="submit" class="btn-reservar">Confirmar Reserva pelo WhatsApp</button>
     </form>
   </div>
 </div>
 
-<!-- Botão flutuante para mobile -->
-<button id="botao-mobile" onclick="alert('Aqui você poderá ver suas reservas no futuro!')">
-  Ver Minhas Cartelas
-</button>
-
 <script>
-  let cartelaAtual = null;
+  let selecionadas = [];
 
   async function carregarCartelas() {
-    const response = await fetch('status.csv');
-    const texto = await response.text();
-    const linhas = texto.trim().split('\n');
     const container = document.getElementById('cartelas');
-    container.innerHTML = '';
+    container.innerHTML = '<em>Carregando cartelas...</em>';
+    try {
+      const response = await fetch('assets/status.csv?nocache=' + Date.now());
+      if (!response.ok) throw new Error('Falha ao carregar arquivo CSV');
+      const texto = await response.text();
+      const linhas = texto.trim().split('\n');
+      if (linhas.length < 2) {
+        container.innerHTML = '<p>Nenhuma cartela encontrada.</p>';
+        return;
+      }
 
-    linhas.slice(1).forEach(linha => { // Ignora cabeçalho
-      const [numeroStr, statusRaw] = linha.split(',');
-      const numero = parseInt(numeroStr);
-      const status = statusRaw.trim().toLowerCase();
-      const numeroFormatado = numero.toString().padStart(3, '0');
+      container.innerHTML = '';
+      linhas.slice(1).forEach(linha => {
+        const [numeroStr, statusRaw] = linha.split(',');
+        const numero = parseInt(numeroStr);
+        const status = statusRaw.trim().toLowerCase();
+        const numeroFormatado = numero.toString().padStart(3, '0');
+        const extensao = (numero >= 791 && numero <= 800) ? 'jpg' : 'png';
+        const imagemSrc = `assets/cart${numero}.${extensao}`;
 
-      const card = document.createElement('div');
-      card.className = 'card';
+        const card = document.createElement('div');
+        card.className = 'card';
 
-      const statusClasses = {
-        livre: 'livre',
-        reservada: 'reservada',
-        vendida: 'vendida'
-      };
+        let checkbox = '';
+        let statusText = 'Desconhecido';
+        if (status === 'livre') {
+          checkbox = `<input type='checkbox' value='${numeroFormatado}' onchange='selecionar(this)'>`;
+          statusText = 'Disponível por apenas R$ 10,00';
+        } else if (status === 'reservada') {
+          statusText = 'Cartela reservada';
+        } else {
+          statusText = 'Essa já foi vendida 😞';
+        }
 
-      const statusLabels = {
-        livre: 'Disponível',
-        reservada: 'Reservada',
-        vendida: 'Vendida'
-      };
-
-      const statusClass = statusClasses[status] || '';
-      const statusText = statusLabels[status] || 'Desconhecido';
-
-      const imagemSrc = `cartela${numeroFormatado}.png`;
-
-      const botao = (status === 'livre') ?
-        `<button class="btn-livre" onclick="abrirFormulario(${numero})">Reservar</button>` :
-        `<button class="btn-desabilitado" disabled>${statusText}</button>`;
-
-      card.innerHTML = `
-        <h3>Cartela ${numeroFormatado}</h3>
-        <img src="${imagemSrc}" alt="Cartela ${numero}">
-        <div class="status ${statusClass}">${statusText}</div>
-        ${botao}
-      `;
-
-      container.appendChild(card);
-    });
+        card.innerHTML = `
+          ${checkbox}
+          <h3>Cartela ${numeroFormatado}</h3>
+          <img src="${imagemSrc}" alt="Cartela ${numeroFormatado}" loading="lazy" onerror="this.onerror=null;this.src='assets/cartela-placeholder.png'">
+          <div class="status ${status}">${statusText}</div>
+        `;
+        container.appendChild(card);
+      });
+    } catch (e) {
+      container.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar cartelas: ${e.message}</p>`;
+    }
   }
 
-  function abrirFormulario(numero) {
-    cartelaAtual = numero;
-    document.getElementById('cartelaSelecionada').textContent = numero.toString().padStart(3, '0');
+  function selecionar(checkbox) {
+    const valor = checkbox.value;
+    if (checkbox.checked) {
+      if (!selecionadas.includes(valor)) selecionadas.push(valor);
+    } else {
+      selecionadas = selecionadas.filter(n => n !== valor);
+    }
+
+    const botaoFixo = document.getElementById('botaoFixo');
+    if (selecionadas.length === 0) {
+      botaoFixo.style.display = 'none';
+    } else {
+      botaoFixo.style.display = 'block';
+      botaoFixo.textContent = `📱 Reservar (${selecionadas.length} cartela${selecionadas.length > 1 ? 's' : ''})`;
+    }
+  }
+
+  function abrirFormulario() {
+    if (selecionadas.length === 0) {
+      alert('Selecione ao menos uma cartela.');
+      return;
+    }
+    selecionadas.sort();
+    document.getElementById('listaSelecionadas').innerHTML = selecionadas.map(n => `<li>Cartela ${n}</li>`).join('');
     document.getElementById('popup-bg').style.display = 'flex';
   }
 
@@ -293,17 +316,22 @@ button {
     const nome = document.getElementById('nome').value.trim();
     const endereco = document.getElementById('endereco').value.trim();
     const cidade = document.getElementById('cidade').value.trim();
-const telefone = document.getElementById('telefone').value.trim();
+    const contato = document.getElementById('contato').value.trim();
 
-    const mensagem = `Olá! Quero reservar a Cartela ${cartelaAtual.toString().padStart(3, '0')}.\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nTelefone: ${telefone}`;
-    const whatsapNumero = '5591980499217';
-    const url = `https://wa.me/${whatsapNumero}?text=${encodeURIComponent(mensagem)}`;
+    if (!/^\d{10,}$/.test(contato)) {
+      alert("Por favor, informe um telefone válido (somente números, mínimo 10 dígitos).");
+      return;
+    }
 
+    const telefoneDestino = '5591980499217';
+    const mensagem = `Olá! Quero reservar as seguintes cartelas:\n${selecionadas.join(', ')}\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nTelefone: ${contato}`;
+    const url = `https://wa.me/${telefoneDestino}?text=${encodeURIComponent(mensagem)}`;
     window.open(url, '_blank');
+    alert("Redirecionando para o WhatsApp. Finalize sua reserva por lá.");
     fecharFormulario();
   }
 
-  carregarCartelas();
+  window.onload = carregarCartelas;
 </script>
 
 </body>
