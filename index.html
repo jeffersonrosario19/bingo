@@ -4,12 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bingão do Caranguejo</title>
-  <meta name="description" content="Escolha sua cartela do Bingão do Caranguejo e concorra a prêmios incríveis!">
-  <meta property="og:title" content="Bingão do Caranguejo">
-  <meta property="og:description" content="Reserve cartelas e participe!">
-  <meta property="og:image" content="assets/cartaz.png">
   <style>
-    body {
+    /* ... (todo o seu CSS permanece igual) ... */
+body {
       font-family: sans-serif;
       background: #f4f4f4;
       padding: 20px;
@@ -217,11 +214,17 @@
     <h2>Reservar Cartelas</h2>
     <p><strong>Selecionadas:</strong></p>
     <ul id="listaSelecionadas"></ul>
+
+    <!-- Aviso de privacidade -->
+    <p style="font-size: 14px; color: #666; margin: 10px 8px;">
+      🔒 <strong>Aviso:</strong> As informações fornecidas serão utilizadas exclusivamente para preenchimento do canhoto da cartela e conferência no sistema do Bingão. Nenhum dado será compartilhado ou utilizado para outros fins.
+    </p>
+
     <form onsubmit="enviarWhatsApp(event)">
-      <input type="text" id="nome" placeholder="Nome completo" aria-label="Nome completo" required>
-      <input type="text" id="endereco" placeholder="Endereço" aria-label="Endereço" required>
-      <input type="text" id="cidade" placeholder="Cidade" aria-label="Cidade" required>
-      <input type="text" id="contato" placeholder="Telefone (somente números e DDD)" aria-label="Telefone" required>
+      <input type="text" id="nome" placeholder="Nome completo" required>
+      <input type="text" id="endereco" placeholder="Endereço" required>
+      <input type="text" id="cidade" placeholder="Cidade" required>
+      <input type="text" id="contato" placeholder="Telefone (somente números e DDD)" required>
       <button type="submit" class="btn-reservar">Confirmar Reserva pelo WhatsApp</button>
     </form>
   </div>
