@@ -3,24 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cartelas Disponíveis</title>
+  <title>Bingão do Caranguejo</title>
   <style>
     body {
       font-family: sans-serif;
       background: #f4f4f4;
       padding: 20px;
-      padding-bottom: 80px; /* Espaço extra para o botão fixo */
+      padding-bottom: 80px;
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
     }
+
+    .subtitulo {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 30px;
+      color: #555;
+    }
+
     .grid {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
       justify-content: center;
     }
+
     .card {
       background: #fff;
       border-radius: 8px;
@@ -31,12 +41,14 @@
       text-align: center;
       position: relative;
     }
+
     .card input[type="checkbox"] {
       position: absolute;
       top: 10px;
       left: 10px;
       transform: scale(1.2);
     }
+
     .card img {
       width: 100%;
       max-height: 150px;
@@ -44,10 +56,12 @@
       border-radius: 6px;
       margin-bottom: 10px;
     }
+
     .status {
       margin: 10px 0;
       font-weight: bold;
     }
+
     .livre { color: green; }
     .reservada { color: orange; }
     .vendida { color: gray; }
@@ -117,6 +131,24 @@
       box-sizing: border-box;
     }
 
+    .btn-reservar {
+      width: calc(100% - 16px);
+      margin: 10px 8px 0 8px;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .btn-reservar:hover {
+      background: #0056b3;
+    }
+
     #fechar {
       position: absolute;
       top: -10px;
@@ -155,27 +187,50 @@
         width: 100%;
       }
     }
+
+    .botao-cartaz {
+      display: block;
+      margin: 0 auto 30px;
+      padding: 10px 20px;
+      background-color: #ff9800;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      font-size: 15px;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .botao-cartaz:hover {
+      background-color: #e68900;
+    }
   </style>
 </head>
 <body>
 
-<h1>Escolha suas Cartelas</h1>
+<h1>Bingão do Caranguejo</h1>
+<p class="subtitulo">Escolha já a sua cartela e concorra a valiosos prêmios!</p>
+
+<a href="cartaz.png" target="_blank" class="botao-cartaz">Ver Cartaz do Bingão</a>
+
 <div class="grid" id="cartelas"><em>Carregando cartelas...</em></div>
 
-<button id="botaoFixo" onclick="abrirFormulario()">Reservar (0 cartelas)</button>
+<button id="botaoFixo" onclick="abrirFormulario()">Reservar pelo Whatsapp (0 cartelas)</button>
 
 <div id="popup-bg">
   <div id="popup">
     <button id="fechar" onclick="fecharFormulario()">×</button>
-    <h2>Reservar Cartelas</h2>
+    <h2>Bingao - Listar Reservas</h2>
     <p><strong>Selecionadas:</strong></p>
     <ul id="listaSelecionadas"></ul>
     <form onsubmit="enviarWhatsApp(event)">
       <input type="text" id="nome" placeholder="Nome completo" required>
       <input type="text" id="endereco" placeholder="Endereço" required>
       <input type="text" id="cidade" placeholder="Cidade" required>
-      <input type="text" id="contato" placeholder="Telefone (somente números)" required>
-      <button type="submit" style="width: 100%; background: #007bff; margin-top: 10px;">Confirmar Reserva</button>
+      <input type="text" id="contato" placeholder="Telefone (somente números e DDD)" required>
+      <button type="submit" class="btn-reservar">Confirmar Reserva pelo Whatsapp</button>
     </form>
   </div>
 </div>
@@ -212,11 +267,11 @@
         let statusText = 'Desconhecido';
         if (status === 'livre') {
           checkbox = `<input type='checkbox' value='${numeroFormatado}' onchange='selecionar(this)'>`;
-          statusText = 'Disponível';
+          statusText = 'Disponível por apenas R$ 10,00';
         } else if (status === 'reservada') {
-          statusText = 'Reservada';
+          statusText = 'Cartela reservada';
         } else {
-          statusText = 'Vendida';
+          statusText = 'Essa já foi vendida 😞';
         }
 
         card.innerHTML = `
