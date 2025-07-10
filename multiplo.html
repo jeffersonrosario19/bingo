@@ -1,0 +1,176 @@
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cartelas Disponíveis</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      width: 220px;
+      box-sizing: border-box;
+      text-align: center;
+      position: relative;
+    }
+    .card input[type="checkbox"] {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      transform: scale(1.2);
+    }
+    .card img {
+      width: 100%;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .status {
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    .livre { color: green; }
+    .reservada { color: orange; }
+    .vendida { color: gray; }
+    button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+    }
+    .btn-desabilitado {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+    #reservarSelecionadas {
+      display: block;
+      margin: 30px auto;
+      background: #007bff;
+    }
+    #popup-bg {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    #popup {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      margin: 10px;
+      box-sizing: border-box;
+    }
+    #popup input {
+      width: calc(100% - 16px);
+      padding: 10px;
+      margin: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    #fechar {
+      position: absolute;
+      top: 10px; right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+<h1>Escolha suas Cartelas</h1>
+<div class="grid" id="cartelas"><em>Carregando cartelas...</em></div>
+<button id="reservarSelecionadas" onclick="abrirFormulario()">Reservar Selecionadas</button>
+<div id="popup-bg">
+  <div id="popup">
+    <button id="fechar" onclick="fecharFormulario()">×</button>
+    <h2>Reservar Cartelas</h2>
+    <p id="listaSelecionadas"></p>
+    <form onsubmit="enviarWhatsApp(event)">
+      <input type="text" id="nome" placeholder="Nome completo" required>
+      <input type="text" id="endereco" placeholder="Endereço" required>
+      <input type="text" id="cidade" placeholder="Cidade" required>
+      <input type="text" id="telefone" placeholder="Telefone" required>
+      <button type="submit" style="width: 100%; background: #007bff; margin-top: 10px;">Confirmar Reserva</button>
+    </form>
+  </div>
+</div>
+<script>
+  let selecionadas = [];async function carregarCartelas() { const response = await fetch('status.csv'); const texto = await response.text(); const linhas = texto.trim().split('\n'); const container = document.getElementById('cartelas'); container.innerHTML = '';
+
+linhas.slice(1).forEach(linha => {
+  const [numeroStr, statusRaw] = linha.split(',');
+  const numero = parseInt(numeroStr);
+  const status = statusRaw.trim().toLowerCase();
+  const numeroFormatado = numero.toString().padStart(3, '0');
+  const imagemSrc = `cartela${numeroFormatado}.png`;
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  let checkbox = '';
+  let statusText = 'Desconhecido';
+  if (status === 'livre') {
+    checkbox = `<input type='checkbox' value='${numeroFormatado}' onchange='selecionar(this)'>`;
+    statusText = 'Disponível';
+  } else if (status === 'reservada') {
+    statusText = 'Reservada';
+  } else {
+    statusText = 'Vendida';
+  }
+
+  card.innerHTML = `
+    ${checkbox}
+    <h3>Cartela ${numeroFormatado}</h3>
+    <img src="${imagemSrc}" alt="Cartela ${numeroFormatado}">
+    <div class="status ${status}">${statusText}</div>
+  `;
+  container.appendChild(card);
+});
+
+}
+
+function selecionar(checkbox) { const valor = checkbox.value; if (checkbox.checked) { if (!selecionadas.includes(valor)) selecionadas.push(valor); } else { selecionadas = selecionadas.filter(n => n !== valor); } }
+
+function abrirFormulario() { if (selecionadas.length === 0) { alert('Selecione ao menos uma cartela.'); return; } document.getElementById('listaSelecionadas').innerText = 'Cartelas: ' + selecionadas.join(', '); document.getElementById('popup-bg').style.display = 'flex'; }
+
+function fecharFormulario() { document.getElementById('popup-bg').style.display = 'none'; document.querySelector('#popup form').reset(); }
+
+function enviarWhatsApp(event) { event.preventDefault(); const nome = document.getElementById('nome').value.trim(); const endereco = document.getElementById('endereco').value.trim(); const cidade = document.getElementById('cidade').value.trim(); const telefoneCliente = document.getElementById('telefone').value.trim(); const telefone = '5591980499217'; const mensagem = Olá! Quero reservar as seguintes cartelas:\n${selecionadas.join(', ')}\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nTelefone: ${telefoneCliente}; const url = https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}; window.open(url, '_blank'); fecharFormulario(); }
+
+carregarCartelas(); </script>
+
+</body>
+</html>
