@@ -212,6 +212,7 @@ button {
       <input type="text" id="nome" placeholder="Nome completo" required>
       <input type="text" id="endereco" placeholder="Endereço" required>
       <input type="text" id="cidade" placeholder="Cidade" required>
+<input type="text" id="telefone" placeholder="Telefone" required>
       <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 15px;">
         <button type="button" onclick="fecharFormulario()" style="flex:1; background: #6c757d;">Voltar</button>
         <button type="submit" style="flex:1; background: #007bff;">Confirmar</button>
@@ -292,8 +293,9 @@ button {
     const nome = document.getElementById('nome').value.trim();
     const endereco = document.getElementById('endereco').value.trim();
     const cidade = document.getElementById('cidade').value.trim();
+const telefone = document.getElementById('telefone').value.trim();
 
-    const mensagem = `Olá! Quero reservar a Cartela ${cartelaAtual.toString().padStart(3, '0')}.\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}`;
+    const mensagem = `Olá! Quero reservar a Cartela ${cartelaAtual.toString().padStart(3, '0')}.\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nTelefone: ${telefone}`;
     const telefone = '5591980499217';
     const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
 
