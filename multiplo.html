@@ -122,7 +122,7 @@
       <input type="text" id="nome" placeholder="Nome completo" required>
       <input type="text" id="endereco" placeholder="Endereço" required>
       <input type="text" id="cidade" placeholder="Cidade" required>
-      <input type="text" id="telefone" placeholder="Telefone" required>
+      <input type="text" id="telefoneCliente" placeholder="Telefone" required>
       <button type="submit" style="width: 100%; background: #007bff; margin-top: 10px;">Confirmar Reserva</button>
     </form>
   </div>
@@ -168,9 +168,21 @@ function abrirFormulario() { if (selecionadas.length === 0) { alert('Selecione a
 
 function fecharFormulario() { document.getElementById('popup-bg').style.display = 'none'; document.querySelector('#popup form').reset(); }
 
-function enviarWhatsApp(event) { event.preventDefault(); const nome = document.getElementById('nome').value.trim(); const endereco = document.getElementById('endereco').value.trim(); const cidade = document.getElementById('cidade').value.trim(); const telefoneCliente = document.getElementById('telefoneCliente).value.trim(); const telefone = '5591980499217'; const mensagem = Olá! Quero reservar as seguintes cartelas:\n${selecionadas.join(', ')}\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nTelefone: ${telefoneCliente}; const url = https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}; window.open(url, '_blank'); fecharFormulario(); }
+function enviarWhatsApp(event) {
+  event.preventDefault();
+  const nome = document.getElementById('nome').value.trim();
+  const endereco = document.getElementById('endereco').value.trim();
+  const cidade = document.getElementById('cidade').value.trim();
+  const telefoneCliente = document.getElementById('telefoneCliente').value.trim();
+  const telefone = '5591980499217';
 
-carregarCartelas(); </script>
+  const mensagem = `Olá! Quero reservar as seguintes cartelas:\n${selecionadas.join(', ')}\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nTelefone: ${telefoneCliente}`;
+
+  const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+  window.open(url, '_blank');
+  fecharFormulario();
+}
+ </script>
 
 </body>
 </html>
