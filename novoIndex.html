@@ -9,6 +9,8 @@
       font-family: sans-serif;
       background: #fff;
       padding: 5px;
+      padding-bottom: 60px; /* espaço para o botão fixo no rodapé */
+      margin: 0;
     }
     h1 {
       text-align: center;
@@ -62,11 +64,6 @@
       position: relative;
       box-sizing: border-box;
       user-select: none;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .card:hover {
-      background-color: #bbb;
     }
     .card input[type="checkbox"] {
       position: absolute;
@@ -94,14 +91,11 @@
       border-radius: 6px;
       margin-bottom: 6px;
       background: white;
-      user-select: none;
-      pointer-events: none;
     }
     .status {
       font-weight: bold;
       font-size: 13px;
       margin-bottom: 6px;
-      user-select: none;
     }
     .livre { color: green; }
     .reservada { color: orange; }
@@ -117,7 +111,6 @@
       width: 100%;
       box-sizing: border-box;
       transition: background 0.3s;
-      user-select: none;
     }
     .btn-ver:hover {
       background: #0056b3;
@@ -173,23 +166,28 @@
       padding: 0;
       user-select: none;
     }
-    /* Botão flutuante reserva */
+    /* Botão fixo no rodapé */
     #botaoFixo {
       position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 0;
+      left: 0;
+      width: 100%;
       background-color: #28a745;
       color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 30px;
-      font-size: 16px;
+      padding: 15px 0;
+      font-size: 18px;
       font-weight: bold;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      display: none;
+      border: none;
       cursor: pointer;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
+      z-index: 1000;
+      border-radius: 0;
+      display: none; /* fica oculto se não tiver seleção */
+      text-align: center;
+      transition: background-color 0.3s;
+    }
+    #botaoFixo:hover {
+      background-color: #218838;
     }
     /* Popup reserva */
     #popup-bg {
@@ -230,23 +228,17 @@
       padding: 5px 0;
       border-bottom: 1px solid #eee;
     }
-    #popup label {
-      font-weight: bold;
-      display: block;
-      margin-top: 10px;
-    }
     #popup input {
       width: calc(100% - 16px);
       padding: 10px;
-      margin: 6px 8px 0 8px;
+      margin: 6px 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
-      font-size: 14px;
     }
     .btn-reservar {
       width: calc(100% - 16px);
-      margin: 20px 8px 0 8px;
+      margin: 10px 8px 0 8px;
       padding: 12px;
       background: #007bff;
       color: white;
@@ -255,7 +247,6 @@
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
     }
     .btn-reservar:hover {
       background: #0056b3;
@@ -287,8 +278,8 @@
 
   <div id="cartelas"></div>
 
-  <!-- Botão fixo de reservar -->
-  <button id="botaoFixo" aria-label="Botão para reservar cartelas selecionadas" title="Clique para reservar as cartelas selecionadas" onclick="abrirFormulario()">📱 Reservar (0 cartelas)</button>
+  <!-- Botão fixo no rodapé -->
+  <button id="botaoFixo" onclick="abrirFormulario()">📱 Reservar (0 cartelas)</button>
 
   <!-- Modal da imagem real -->
   <div id="modalImagem" onclick="fecharModal(event)">
@@ -305,19 +296,14 @@
       <h3>Reservar Cartelas</h3>
       <p>Cartelas selecionadas:</p>
       <ul id="listaSelecionadas"></ul>
-
-      <label for="nome">Nome completo:</label>
-      <input type="text" id="nome" placeholder="Seu nome completo" autocomplete="name" />
-
-      <label for="endereco">Endereço:</label>
-      <input type="text" id="endereco" placeholder="Seu Endereço" autocomplete="street-address" />
-
-      <label for="cidade">Cidade:</label>
-      <input type="text" id="cidade" placeholder="Sua cidade" autocomplete="address-level2" />
-
-      <label for="whatsapp">WhatsApp:</label>
-      <input type="tel" id="whatsapp" placeholder="Seu WhatsApp" autocomplete="tel" />
-
+      <label for="nome">Nome completo:</label><br/>
+      <input type="text" id="nome" placeholder="Seu nome completo" /><br/>
+      <label for="endereco">Endereço:</label><br/>
+      <input type="text" id="endereco" placeholder="Seu endereço" /><br/>
+      <label for="cidade">Cidade:</label><br/>
+      <input type="text" id="cidade" placeholder="Sua cidade" /><br/>
+      <label for="whatsapp">WhatsApp:</label><br/>
+      <input type="text" id="whatsapp" placeholder="Seu WhatsApp" /><br/>
       <button class="btn-reservar" onclick="enviarReserva()">Enviar Reserva</button>
     </div>
   </div>
@@ -337,7 +323,7 @@
 
     async function carregarCartelas() {
       try {
-        const response = await fetch('assets/status.csv?' + Date.now()); // cache bust
+        const response = await fetch('assets/status.csv');
         const text = await response.text();
 
         const linhas = text.trim().split('\n');
@@ -353,12 +339,6 @@
         });
 
         cartelas.sort((a, b) => a.id - b.id);
-
-        container.innerHTML = '';
-        sequencias.length = 0;
-        selecionadas.clear();
-        atualizarBotaoFixo();
-        atualizarListaSelecionadas();
 
         const totalSequencias = Math.ceil(cartelas.length / cartelasPorSequencia);
         for (let i = 0; i < totalSequencias; i++) {
@@ -394,7 +374,6 @@
       cartelasDoGrupo.forEach(c => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.tabIndex = 0;
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -426,7 +405,6 @@
         const formatos = ['png', 'jpg', 'jpeg', 'svg'];
         let carregada = false;
 
-        // Tentar carregar a imagem com fallback
         for (let ext of formatos) {
           const caminho = `assets/cart${c.id}.${ext}`;
           const testeImg = new Image();
@@ -437,13 +415,13 @@
               img.src = caminho;
             }
           };
-          testeImg.onerror = () => {
-            // Se nenhuma carregar após todos tentados, fallback padrão
-            if (!carregada && ext === formatos[formatos.length -1]) {
-              img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0wIDBoMTAwdjgwaC0xMDB6IiBmaWxsPSIjY2NjIi8+PHRleHQgeD0iNTAiIHk9IjQ1IiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmIj5ObyBJbWFnZW08L3RleHQ+PC9zdmc+';
-            }
-          };
         }
+
+        setTimeout(() => {
+          if (!carregada) {
+            img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0wIDBoMTAwdjgwaC0xMDB6IiBmaWxsPSIjY2NjIi8+PHRleHQgeD0iNTAiIHk9IjQ1IiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmIj5ObyBJbWFnZW08L3RleHQ+PC9zdmc+';
+          }
+        }, 1000);
 
         card.appendChild(img);
 
@@ -460,20 +438,6 @@
           abrirModal(img.src, c.id);
         };
         card.appendChild(btnVer);
-
-        // Selecionar/desselecionar ao clicar no card (exceto checkbox e botão)
-        card.onclick = (e) => {
-          if (checkbox.disabled) return;
-          if (e.target === checkbox || e.target === btnVer) return;
-          checkbox.checked = !checkbox.checked;
-          if (checkbox.checked) {
-            selecionadas.add(c.id);
-          } else {
-            selecionadas.delete(c.id);
-          }
-          atualizarBotaoFixo();
-          atualizarListaSelecionadas();
-        };
 
         cardsDiv.appendChild(card);
       });
@@ -549,7 +513,6 @@
         return false;
       }
 
-      // Validar WhatsApp: somente números, 10 a 13 dígitos
       const numLimpo = whatsapp.replace(/\D/g, '');
       if (numLimpo.length < 10 || numLimpo.length > 13) {
         alert('Por favor, informe um número de WhatsApp válido (10 a 13 dígitos).');
@@ -562,15 +525,16 @@
     function enviarReserva() {
       if (!validarCampos()) return;
 
+      const nome = document.getElementById('nome').value.trim();
+      const endereco = document.getElementById('endereco').value.trim();
+      const cidade = document.getElementById('cidade').value.trim();
+      const whatsapp = document.getElementById('whatsapp').value.trim();
+
       if (selecionadas.size === 0) {
         alert('Selecione pelo menos uma cartela para reservar.');
         return;
       }
 
-      const nome = document.getElementById('nome').value.trim();
-      const whatsapp = document.getElementById('whatsapp').value.trim();
-      const endereco = document.getElementById('endereco').value.trim();
-      const cidade = document.getElementById('cidade').value.trim();
       const cartelasText = Array.from(selecionadas).sort((a, b) => a - b).join(', ');
 
       const msg = 
@@ -587,7 +551,6 @@
       selecionadas.clear();
       atualizarBotaoFixo();
       fecharFormulario();
-
       document.querySelectorAll('.card input[type=checkbox]').forEach(chk => chk.checked = false);
     }
 
