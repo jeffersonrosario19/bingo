@@ -338,8 +338,14 @@
           const img = document.createElement('img');
           img.src = imgSrc;
           img.alt = `Cartela ${numeroFormatado}`;
-          img.loading = 'lazy';
-          img.onerror = () => { img.src = 'assets/cartela-placeholder.png'; };
+          img.loading = 'lazy'
+          img.onerror = function() {
+  if (!this.dataset.errored) {
+    this.dataset.errored = "true";
+    this.src = 'assets/cartela-placeholder.svg';
+  }
+};
+
 
           // Status
           const statusDiv = document.createElement('div');
