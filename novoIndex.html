@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cartelas - Reservas</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 16px;
+    background: #f8f8f8;
+  }
+
+  #cartelas {
+    max-width: 100%;
+  }
+
+  .sequencia {
+    margin-bottom: 30px;
+  }
+
+  .sequencia h2 {
+    cursor: pointer;
+    user-select: none;
+    background: #ddd;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 0 0 8px 0;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+  }
+
+  .scroll-horizontal {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    transition: max-height 0.3s ease;
+    scrollbar-width: thin;
+    scrollbar-color: #888 #eee;
+  }
+
+  .scroll-horizontal.closed {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
+    gap: 0;
+  }
+
+  .scroll-horizontal::-webkit-scrollbar {
+    height: 8px;
+  }
+  .scroll-horizontal::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  .scroll-horizontal::-webkit-scrollbar-track {
+    background: #eee;
+  }
+
+  .card-mini {
+    flex: 0 0 90px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    padding: 5px;
+    position: relative;
+    text-align: center;
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+
+  .card-mini input[type="checkbox"] {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    transform: scale(1);
+    cursor: pointer;
+    z-index: 2;
+    background: transparent;
+  }
+
+  .card-mini label {
+    position: absolute;
+    top: 6px;
+    left: 30px;
+    font-weight: bold;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .card-mini img {
+    width: 100%;
+    height: 60px;
+    object-fit: contain;
+    margin-top: 20px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .status {
+    font-weight: bold;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .livre {
+    color: green;
+  }
+
+  .reservada {
+    color: orange;
+  }
+
+  .vendida {
+    color: red;
+  }
+
+  /* Botão flutuante */
+  #botaoFixo {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #25D366;
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 40px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    z-index: 9999;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+
+  #botaoFixo:hover {
+    background: #1ebe57;
+  }
+
+  /* Popup bg */
+  #popup-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #popup {
+    background: white;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    position: relative;
+  }
+
+  #popup h3 {
+    margin-top: 0;
+  }
+
+  #popup ul {
+    list-style: none;
+    padding-left: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+  }
+
+  #popup form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+
+  #popup form input {
+    width: 100%;
+    padding: 8px 6px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  #popup form button {
+    background: #25D366;
+    border: none;
+    padding: 12px 20px;
+    color: white;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  #popup form button:hover {
+    background: #1ebe57;
+  }
+
+  #popup .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+  }
+  #popup .close-btn:hover {
+    color: #000;
+  }
+</style>
+</head>
+<body>
+
+<h1>Selecione suas Cartelas</h1>
+
+<div id="cartelas">
+  <!-- Cartelas carregadas via JS -->
+</div>
+
+<button id="botaoFixo" onclick="abrirFormulario()">Reservar</button>
+
+<!-- Popup de formulário -->
+<div id="popup-bg" onclick="if(event.target.id==='popup-bg') fecharFormulario()">
+  <div id="popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <span class="close-btn" onclick="fecharFormulario()" aria-label="Fechar">&times;</span>
+    <h3 id="popup-title">Confirme suas cartelas</h3>
+    <p>Você selecionou as seguintes cartelas:</p>
+    <ul id="listaSelecionadas"></ul>
+    <form onsubmit="enviarWhatsApp(event)" autocomplete="off">
+      <label for="nome">Nome completo:</label>
+      <input type="text" id="nome" name="nome" required />
+
+      <label for="endereco">Endereço:</label>
+      <input type="text" id="endereco" name="endereco" required />
+
+      <label for="cidade">Cidade:</label>
+      <input type="text" id="cidade" name="cidade" required />
+
+      <label for="contato">Telefone (somente números):</label>
+      <input type="tel" id="contato" name="contato" pattern="\d{10,}" title="Digite pelo menos 10 números" required />
+
+      <button type="submit">Enviar pelo WhatsApp</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  let selecionadas = [];
+  let sequenciaAberta = 0; // índice do bloco aberto
+
+  async function carregarCartelas() {
+    const container = document.getElementById('cartelas');
+    container.innerHTML = '<em>Carregando cartelas...</em>';
+
+    try {
+      const response = await fetch('assets/status.csv?nocache=' + Date.now());
+      if (!response.ok) throw new Error('Falha ao carregar arquivo CSV');
+      const texto = await response.text();
+      const linhas = texto.trim().split('\n');
+
+      if (linhas.length < 2) {
+        container.innerHTML = '<p>Nenhuma cartela encontrada.</p>';
+        return;
+      }
+
+      // Processar cartelas e separar em blocos de 10
+      const cartelas = linhas.slice(1).map(linha => {
+        const [numeroStr, statusRaw] = linha.split(',');
+        return {
+          numero: parseInt(numeroStr, 10),
+          status: statusRaw.trim().toLowerCase()
+        };
+      });
+
+      // Criar blocos de 10
+      const blocos = [];
+      for (let i = 0; i < cartelas.length; i += 10) {
+        blocos.push(cartelas.slice(i, i + 10));
+      }
+
+      container.innerHTML = '';
+
+      blocos.forEach((bloco, idx) => {
+        const inicio = bloco[0].numero;
+        const fim = bloco[bloco.length - 1].numero;
+
+        // Cria o container da sequencia
+        const seqDiv = document.createElement('div');
+        seqDiv.className = 'sequencia';
+
+        // Cria o título clicável
+        const h2 = document.createElement('h2');
+        h2.textContent = `Cartelas de ${inicio} a ${fim}`;
+        h2.style.userSelect = 'none';
+        h2.addEventListener('click', () => abrirSequencia(idx));
+        seqDiv.appendChild(h2);
+
+        // Cria o container do scroll horizontal
+        const scrollDiv = document.createElement('div');
+        scrollDiv.className = 'scroll-horizontal';
+        if (idx !== 0) scrollDiv.classList.add('closed'); // deixa fechado exceto o primeiro
+        seqDiv.appendChild(scrollDiv);
+
+        // Preencher as miniaturas
+        bloco.forEach(cartela => {
+          const numeroFormatado = cartela.numero.toString().padStart(3, '0');
+          const extensao = (cartela.numero >= 791 && cartela.numero <= 800) ? 'jpg' : 'png';
+          const imgSrc = `assets/cart${cartela.numero}.${extensao}`;
+
+          const card = document.createElement('div');
+          card.className = 'card-mini';
+
+          // Cria checkbox com id único
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.id = `chk${cartela.numero}`;
+          checkbox.value = numeroFormatado;
+          checkbox.checked = selecionadas.includes(numeroFormatado);
+          checkbox.addEventListener('change', () => selecionar(checkbox));
+
+          // Label para mostrar o número ao lado do checkbox
+          const label = document.createElement('label');
+          label.htmlFor = checkbox.id;
+          label.textContent = cartela.numero;
+
+          // Imagem da cartela
+          const img = document.createElement('img');
+          img.src = imgSrc;
+          img.alt = `Cartela ${numeroFormatado}`;
+          img.loading = 'lazy';
+          img.onerror = () => { img.src = 'assets/cartela-placeholder.png'; };
+
+          // Status
+          const statusDiv = document.createElement('div');
+          statusDiv.className = 'status ' + cartela.status;
+
+          if (cartela.status === 'livre') {
+            statusDiv.textContent = 'Disponível';
+          } else if (cartela.status === 'reservada') {
+            statusDiv.textContent = 'Reservada';
+          } else {
+            statusDiv.textContent = 'Vendida';
+          }
+
+          card.appendChild(checkbox);
+          card.appendChild(label);
+          card.appendChild(img);
+          card.appendChild(statusDiv);
+
+          scrollDiv.appendChild(card);
+        });
+
+        container.appendChild(seqDiv);
+      });
+
+      atualizarBotaoFixo();
+
+    } catch (e) {
+      container.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar cartelas: ${e.message}</p>`;
+    }
+  }
+
+  // Alterna sequências abertas
+  function abrirSequencia(idx) {
+    if (sequenciaAberta === idx) return; // se clicar no mesmo, não faz nada
+
+    const container = document.getElementById('cartelas');
+    const sequencias = container.querySelectorAll('.sequencia');
+
+    sequencias.forEach((seq, i) => {
+      const scrollDiv = seq.querySelector('.scroll-horizontal');
+      if (i === idx) {
+        scrollDiv.classList.remove('closed');
+      } else {
+        scrollDiv.classList.add('closed');
+      }
+    });
+
+    sequenciaAberta = idx;
+  }
+
+  // Atualiza lista de selecionadas e botão fixo
+  function selecionar(checkbox) {
+    const valor = checkbox.value;
+    if (checkbox.checked) {
+      if (!selecionadas.includes(valor)) selecionadas.push(valor);
+    } else {
+      selecionadas = selecionadas.filter(n => n !== valor);
+    }
+
+    atualizarBotaoFixo();
+  }
+
+  function atualizarBotaoFixo() {
+    const botaoFixo = document.getElementById('botaoFixo');
+    if (selecionadas.length === 0) {
+      botaoFixo.style.display = 'none';
+    } else {
+      botaoFixo.style.display = 'block';
+      botaoFixo.textContent = `📱 Reservar (${selecionadas.length} cartela${selecionadas.length > 1 ? 's' : ''})`;
+    }
+  }
+
+  function abrirFormulario() {
+    if (selecionadas.length === 0) {
+      alert('Selecione ao menos uma cartela.');
+      return;
+    }
+    selecionadas.sort();
+    document.getElementById('listaSelecionadas').innerHTML = selecionadas.map(n => `<li>Cartela ${n}</li>`).join('');
+    document.getElementById('popup-bg').style.display = 'flex';
+  }
+
+  function fecharFormulario() {
+    document.getElementById('popup-bg').style.display = 'none';
+    document.querySelector('#popup form').reset();
+  }
+
+  function enviarWhatsApp(event) {
+    event.preventDefault();
+    const nome = document.getElementById('nome').value.trim();
+    const endereco = document.getElementById('endereco').value.trim();
+    const cidade = document.getElementById('cidade').value.trim();
+    const contato = document.getElementById('contato').value.trim();
+
+    if (!/^\d{10,}$/.test(contato)) {
+      alert("Por favor, informe um telefone válido (somente números, mínimo 10 dígitos).");
+      return;
+    }
+
+    const telefoneDestino = '5591980499217';
+    const mensagem = `Olá! Quero reservar as seguintes cartelas:\n${selecionadas.join(', ')}\n\nNome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nTelefone: ${contato}`;
+    const url = `https://wa.me/${telefoneDestino}?text=${encodeURIComponent(mensagem)}`;
+    window.open(url, '_blank');
+    alert("Redirecionando para o WhatsApp. Finalize sua reserva por lá.");
+    fecharFormulario();
+  }
+
+  window.onload = carregarCartelas;
+</script>
+</body>
+</html>
