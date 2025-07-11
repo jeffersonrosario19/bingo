@@ -62,6 +62,11 @@
       position: relative;
       box-sizing: border-box;
       user-select: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .card:hover {
+      background-color: #bbb;
     }
     .card input[type="checkbox"] {
       position: absolute;
@@ -89,11 +94,14 @@
       border-radius: 6px;
       margin-bottom: 6px;
       background: white;
+      user-select: none;
+      pointer-events: none;
     }
     .status {
       font-weight: bold;
       font-size: 13px;
       margin-bottom: 6px;
+      user-select: none;
     }
     .livre { color: green; }
     .reservada { color: orange; }
@@ -109,6 +117,7 @@
       width: 100%;
       box-sizing: border-box;
       transition: background 0.3s;
+      user-select: none;
     }
     .btn-ver:hover {
       background: #0056b3;
@@ -221,17 +230,23 @@
       padding: 5px 0;
       border-bottom: 1px solid #eee;
     }
+    #popup label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
     #popup input {
       width: calc(100% - 16px);
       padding: 10px;
-      margin: 6px 8px;
+      margin: 6px 8px 0 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
+      font-size: 14px;
     }
     .btn-reservar {
       width: calc(100% - 16px);
-      margin: 10px 8px 0 8px;
+      margin: 20px 8px 0 8px;
       padding: 12px;
       background: #007bff;
       color: white;
@@ -240,6 +255,7 @@
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
     .btn-reservar:hover {
       background: #0056b3;
@@ -266,18 +282,13 @@
 </head>
 <body>
 
-  <!-- Banner -->
-  <div class="banner">
-    <img src="assets/banner-bingao.jpg" alt="Banner do Bingão do Caranguejo" />
-  </div>
-
   <h1>Bingão do Caranguejo</h1>
   <p class="subtitulo">Escolha já a sua cartela e concorra a valiosos prêmios!</p>
 
   <div id="cartelas"></div>
 
   <!-- Botão fixo de reservar -->
-  <button id="botaoFixo" onclick="abrirFormulario()">📱 Reservar (0 cartelas)</button>
+  <button id="botaoFixo" aria-label="Botão para reservar cartelas selecionadas" title="Clique para reservar as cartelas selecionadas" onclick="abrirFormulario()">📱 Reservar (0 cartelas)</button>
 
   <!-- Modal da imagem real -->
   <div id="modalImagem" onclick="fecharModal(event)">
@@ -294,10 +305,19 @@
       <h3>Reservar Cartelas</h3>
       <p>Cartelas selecionadas:</p>
       <ul id="listaSelecionadas"></ul>
-      <label for="nome">Nome:</label><br/>
-      <input type="text" id="nome" placeholder="Seu nome" /><br/>
-      <label for="whatsapp">WhatsApp:</label><br/>
-      <input type="text" id="whatsapp" placeholder="Seu WhatsApp" /><br/>
+
+      <label for="nome">Nome completo:</label>
+      <input type="text" id="nome" placeholder="Seu nome completo" autocomplete="name" />
+
+      <label for="endereco">Endereço:</label>
+      <input type="text" id="endereco" placeholder="Seu Endereço" autocomplete="street-address" />
+
+      <label for="cidade">Cidade:</label>
+      <input type="text" id="cidade" placeholder="Sua cidade" autocomplete="address-level2" />
+
+      <label for="whatsapp">WhatsApp:</label>
+      <input type="tel" id="whatsapp" placeholder="Seu WhatsApp" autocomplete="tel" />
+
       <button class="btn-reservar" onclick="enviarReserva()">Enviar Reserva</button>
     </div>
   </div>
@@ -317,7 +337,7 @@
 
     async function carregarCartelas() {
       try {
-        const response = await fetch('assets/status.csv');
+        const response = await fetch('assets/status.csv?' + Date.now()); // cache bust
         const text = await response.text();
 
         const linhas = text.trim().split('\n');
@@ -333,6 +353,12 @@
         });
 
         cartelas.sort((a, b) => a.id - b.id);
+
+        container.innerHTML = '';
+        sequencias.length = 0;
+        selecionadas.clear();
+        atualizarBotaoFixo();
+        atualizarListaSelecionadas();
 
         const totalSequencias = Math.ceil(cartelas.length / cartelasPorSequencia);
         for (let i = 0; i < totalSequencias; i++) {
@@ -368,6 +394,7 @@
       cartelasDoGrupo.forEach(c => {
         const card = document.createElement('div');
         card.className = 'card';
+        card.tabIndex = 0;
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -399,6 +426,7 @@
         const formatos = ['png', 'jpg', 'jpeg', 'svg'];
         let carregada = false;
 
+        // Tentar carregar a imagem com fallback
         for (let ext of formatos) {
           const caminho = `assets/cart${c.id}.${ext}`;
           const testeImg = new Image();
@@ -409,13 +437,13 @@
               img.src = caminho;
             }
           };
+          testeImg.onerror = () => {
+            // Se nenhuma carregar após todos tentados, fallback padrão
+            if (!carregada && ext === formatos[formatos.length -1]) {
+              img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0wIDBoMTAwdjgwaC0xMDB6IiBmaWxsPSIjY2NjIi8+PHRleHQgeD0iNTAiIHk9IjQ1IiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmIj5ObyBJbWFnZW08L3RleHQ+PC9zdmc+';
+            }
+          };
         }
-
-        setTimeout(() => {
-          if (!carregada) {
-            img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0wIDBoMTAwdjgwaC0xMDB6IiBmaWxsPSIjY2NjIi8+PHRleHQgeD0iNTAiIHk9IjQ1IiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmIj5ObyBJbWFnZW08L3RleHQ+PC9zdmc+';
-          }
-        }, 1000);
 
         card.appendChild(img);
 
@@ -432,6 +460,20 @@
           abrirModal(img.src, c.id);
         };
         card.appendChild(btnVer);
+
+        // Selecionar/desselecionar ao clicar no card (exceto checkbox e botão)
+        card.onclick = (e) => {
+          if (checkbox.disabled) return;
+          if (e.target === checkbox || e.target === btnVer) return;
+          checkbox.checked = !checkbox.checked;
+          if (checkbox.checked) {
+            selecionadas.add(c.id);
+          } else {
+            selecionadas.delete(c.id);
+          }
+          atualizarBotaoFixo();
+          atualizarListaSelecionadas();
+        };
 
         cardsDiv.appendChild(card);
       });
@@ -474,6 +516,10 @@
     }
 
     function abrirFormulario() {
+      if (selecionadas.size === 0) {
+        alert('Selecione pelo menos uma cartela para reservar.');
+        return;
+      }
       atualizarListaSelecionadas();
       popupBg.style.display = 'flex';
     }
@@ -482,22 +528,58 @@
       popupBg.style.display = 'none';
     }
 
-    function enviarReserva() {
+    function validarCampos() {
       const nome = document.getElementById('nome').value.trim();
+      const endereco = document.getElementById('endereco').value.trim();
+      const cidade = document.getElementById('cidade').value.trim();
       const whatsapp = document.getElementById('whatsapp').value.trim();
 
-      if (nome === '' || whatsapp === '') {
-        alert('Por favor, preencha nome e WhatsApp.');
-        return;
+      if (nome.length < 3) {
+        alert('Por favor, insira um nome completo válido (mínimo 3 caracteres).');
+        return false;
       }
+
+      if (endereco.length < 5) {
+        alert('Por favor, informe um endereço válido (mínimo 5 caracteres).');
+        return false;
+      }
+
+      if (cidade.length < 3) {
+        alert('Por favor, informe uma cidade válida (mínimo 3 caracteres).');
+        return false;
+      }
+
+      // Validar WhatsApp: somente números, 10 a 13 dígitos
+      const numLimpo = whatsapp.replace(/\D/g, '');
+      if (numLimpo.length < 10 || numLimpo.length > 13) {
+        alert('Por favor, informe um número de WhatsApp válido (10 a 13 dígitos).');
+        return false;
+      }
+
+      return true;
+    }
+
+    function enviarReserva() {
+      if (!validarCampos()) return;
 
       if (selecionadas.size === 0) {
         alert('Selecione pelo menos uma cartela para reservar.');
         return;
       }
 
+      const nome = document.getElementById('nome').value.trim();
+      const whatsapp = document.getElementById('whatsapp').value.trim();
+      const endereco = document.getElementById('endereco').value.trim();
+      const cidade = document.getElementById('cidade').value.trim();
       const cartelasText = Array.from(selecionadas).sort((a, b) => a - b).join(', ');
-      const msg = `Olá, quero reservar as cartelas: ${cartelasText}. Nome: ${nome}. WhatsApp: ${whatsapp}`;
+
+      const msg = 
+        `Olá, quero reservar as cartelas: ${cartelasText}.\n` +
+        `Nome: ${nome}.\n` +
+        `Endereço: ${endereco}.\n` +
+        `Cidade: ${cidade}.\n` +
+        `WhatsApp: ${whatsapp}`;
+
       const urlWhats = `https://wa.me/5591980499217?text=${encodeURIComponent(msg)}`;
       window.open(urlWhats, '_blank');
 
@@ -505,6 +587,7 @@
       selecionadas.clear();
       atualizarBotaoFixo();
       fecharFormulario();
+
       document.querySelectorAll('.card input[type=checkbox]').forEach(chk => chk.checked = false);
     }
 
