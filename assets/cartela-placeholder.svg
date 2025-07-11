@@ -1,0 +1,7 @@
+<div class="card-mini">
+  <!-- placeholder inline SVG -->
+  <svg width="150" height="100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Sem Imagem">
+    <rect width="150" height="100" fill="#ccc"/>
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="16">Sem Imagem</text>
+  </svg>
+</div>
