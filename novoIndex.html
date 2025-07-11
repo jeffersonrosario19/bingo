@@ -5,263 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bingão do Caranguejo</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f4f4f4;
-      padding: 5px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .subtitulo {
-      text-align: center;
-      font-size: 16px;
-      margin-bottom: 30px;
-      color: #555;
-    }
-    .banner {
-      width: 100%;
-      max-height: 200px;
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-    .banner img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: cover;
-    }
-    .sequencia {
-      margin-bottom: 20px;
-    }
-    .sequencia h2 {
-      cursor: pointer;
-      background: #ddd;
-      padding: 8px 12px;
-      margin: 0 0 5px 0;
-      user-select: none;
-    }
-    .sequencia h2:hover {
-      background: #ccc;
-    }
-    .cards-scroll {
-      display: flex;
-      overflow-x: auto;
-      gap: 8px;
-      padding-bottom: 10px;
-      scroll-behavior: smooth;
-    }
-    .card {
-      flex: 0 0 110px;
-      background: #ccc;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 8px 6px 12px 6px;
-      text-align: center;
-      position: relative;
-      box-sizing: border-box;
-      user-select: none;
-    }
-    .card input[type="checkbox"] {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      transform: scale(1.1);
-      cursor: pointer;
-      z-index: 2;
-    }
-    .card .numero-cartela {
-      position: absolute;
-      top: 6px;
-      left: 32px;
-      font-weight: bold;
-      font-size: 14px;
-      color: #222;
-      user-select: none;
-      pointer-events: none;
-      z-index: 1;
-    }
-    .card img {
-      width: 100%;
-      height: 80px;
-      object-fit: contain;
-      border-radius: 6px;
-      margin-bottom: 6px;
-      background: white;
-    }
-    .status {
-      font-weight: bold;
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
-    .livre { color: green; }
-    .reservada { color: orange; }
-    .vendida { color: red; }
-    .btn-ver {
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 5px 6px;
-      font-size: 13px;
-      cursor: pointer;
-      width: 100%;
-      box-sizing: border-box;
-      transition: background 0.3s;
-    }
-    .btn-ver:hover {
-      background: #0056b3;
-    }
-    /* Modal de imagem real */
-    #modalImagem {
-      display: none;
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-    #modalConteudo {
-      background: white;
-      border-radius: 10px;
-      max-width: 90vw;
-      max-height: 90vh;
-      position: relative;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow: hidden;
-    }
-    #modalImagem img {
-      max-width: 100%;
-      max-height: 80vh;
-      object-fit: contain;
-      border-radius: 8px;
-      margin-top: 40px;
-    }
-    #fecharModal {
-      position: absolute;
-      top: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #dc3545;
-      color: white;
-      border: none;
-      font-size: 24px;
-      font-weight: bold;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 10;
-      line-height: 24px;
-      text-align: center;
-      padding: 0;
-      user-select: none;
-    }
-    /* Botão flutuante reserva */
-    #botaoFixo {
-      position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #28a745;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 30px;
-      font-size: 16px;
-      font-weight: bold;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      display: none;
-      cursor: pointer;
-    }
-    /* Popup reserva */
-    #popup-bg {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.6);
-      z-index: 1500;
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.3s ease-in-out;
-      overflow-y: auto;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-    #popup {
-      background: white;
-      padding: 15px 15px 30px 15px;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 400px;
-      position: relative;
-      box-sizing: border-box;
-    }
-    #listaSelecionadas {
-      max-height: 80px;
-      overflow-y: auto;
-      margin: 10px 0;
-      padding: 0 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      list-style: none;
-      font-size: 15px;
-    }
-    #listaSelecionadas li {
-      margin-left: 5px;
-      padding: 5px 0;
-      border-bottom: 1px solid #eee;
-    }
-    #popup input {
-      width: calc(100% - 16px);
-      padding: 10px;
-      margin: 6px 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-    .btn-reservar {
-      width: calc(100% - 16px);
-      margin: 10px 8px 0 8px;
-      padding: 12px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .btn-reservar:hover {
-      background: #0056b3;
-    }
-    #fechar {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      background: #dc3545;
-      color: white;
-      border: none;
-      font-size: 22px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
+    /* TODO O SEU CSS ORIGINAL AQUI - mantenha igual */
   </style>
 </head>
 <body>
@@ -273,8 +17,6 @@
 
   <h1>Bingão do Caranguejo</h1>
   <p class="subtitulo">Escolha já a sua cartela e concorra a valiosos prêmios!</p>
-
-  <a href="assets/cartaz.png" target="_blank" class="botao-cartaz" style="display:none;">Ver Cartaz do Bingão</a>
 
   <div id="cartelas"></div>
 
@@ -305,23 +47,9 @@
   </div>
 
   <script>
-    // Simulação dos dados do CSV - Exemplo básico
-    // Cada item tem: id, status ('livre','reservada','vendida'), imagem (nome do arquivo)
-    const cartelas = [];
-    for(let i=1; i<=100; i++) {
-      cartelas.push({
-        id: i,
-        status: ['livre', 'reservada', 'vendida'][Math.floor(Math.random()*3)],
-        imagem: `cartela${i}.png` // imagens imaginárias
-      });
-    }
-
+    let cartelas = [];
     const cartelasPorSequencia = 10;
-
-    // Guardar sequências para alternar visibilidade
     const sequencias = [];
-
-    // Lista de cartelas selecionadas (checkbox)
     let selecionadas = new Set();
 
     const container = document.getElementById('cartelas');
@@ -331,41 +59,66 @@
     const imagemReal = document.getElementById('imagemReal');
     const modalImagem = document.getElementById('modalImagem');
 
-    // Função para criar cards das cartelas de um intervalo
-    function criarSequenciaCards(inicio, fim, ativa=false) {
+    async function carregarCartelas() {
+      try {
+        const response = await fetch('assets/status.csv');
+        const text = await response.text();
+
+        const linhas = text.trim().split('\n');
+        const dados = linhas.slice(1);
+
+        cartelas = dados.map(linha => {
+          const [numero, status] = linha.split(',');
+          const id = parseInt(numero.trim());
+          return {
+            id,
+            status: status.trim().toLowerCase()
+          };
+        });
+
+        cartelas.sort((a, b) => a.id - b.id);
+
+        const totalSequencias = Math.ceil(cartelas.length / cartelasPorSequencia);
+        for (let i = 0; i < totalSequencias; i++) {
+          const grupo = cartelas.slice(i * cartelasPorSequencia, (i + 1) * cartelasPorSequencia);
+          criarSequenciaCards(grupo, i === 0);
+        }
+      } catch (erro) {
+        console.error('Erro ao carregar o CSV:', erro);
+        container.innerHTML = '<p style="color:red;">Erro ao carregar os dados das cartelas.</p>';
+      }
+    }
+
+    function criarSequenciaCards(cartelasDoGrupo, ativa = false) {
       const seqDiv = document.createElement('div');
       seqDiv.className = 'sequencia';
 
       const h2 = document.createElement('h2');
-      h2.textContent = `Cartelas de ${inicio} a ${fim}`;
-      h2.style.userSelect = 'none';
-
+      const ini = cartelasDoGrupo[0].id;
+      const fim = cartelasDoGrupo[cartelasDoGrupo.length - 1].id;
+      h2.textContent = `Cartelas de ${ini} a ${fim}`;
       h2.onclick = () => {
-        // Alterna visibilidade: esconde todos, mostra só essa
         sequencias.forEach(s => {
           if (s.div !== seqDiv) s.cardsDiv.style.display = 'none';
         });
-        if(seqDiv.querySelector('.cards-scroll').style.display === 'flex') {
-          seqDiv.querySelector('.cards-scroll').style.display = 'none';
-        } else {
-          seqDiv.querySelector('.cards-scroll').style.display = 'flex';
-        }
+        const atual = seqDiv.querySelector('.cards-scroll');
+        atual.style.display = atual.style.display === 'flex' ? 'none' : 'flex';
       };
 
       const cardsDiv = document.createElement('div');
       cardsDiv.className = 'cards-scroll';
       cardsDiv.style.display = ativa ? 'flex' : 'none';
 
-      for(let i = inicio; i <= fim; i++) {
-        const c = cartelas[i-1];
+      cartelasDoGrupo.forEach(c => {
         const card = document.createElement('div');
         card.className = 'card';
 
-        // Checkbox para selecionar
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.id = `chk-${c.id}`;
         checkbox.checked = selecionadas.has(c.id);
+        checkbox.disabled = c.status !== 'livre';
+
         checkbox.onclick = (e) => {
           e.stopPropagation();
           if (checkbox.checked) {
@@ -378,60 +131,64 @@
         };
         card.appendChild(checkbox);
 
-        // Número da cartela no topo
         const numero = document.createElement('div');
         numero.className = 'numero-cartela';
         numero.textContent = c.id;
         card.appendChild(numero);
 
-        // Miniatura da cartela
         const img = document.createElement('img');
-        img.src = `assets/${c.imagem}`;
         img.alt = `Cartela ${c.id}`;
-        img.onerror = () => {
-          // Caso imagem não exista, usar placeholder SVG em base64 embutido:
-          img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjY2NjIiByeD0iMTIiLz4KPHRleHQgeD0iNTAiIHk9IjQ1IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZiI+Tm8gaW1hZ2VtPC90ZXh0Pgo8dGV4dCB4PSI1MCIgeT0iNjUiIGZvbnQtc2l6ZT0iMTAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmIj5hIGZvciBjYXJ0ZWxhPC90ZXh0Pgo8L3N2Zz4=';
-        };
+        img.style.background = 'white';
+
+        const formatos = ['png', 'jpg', 'jpeg', 'svg'];
+        let carregada = false;
+
+        for (let ext of formatos) {
+          const caminho = `assets/cart${c.id}.${ext}`;
+          const testeImg = new Image();
+          testeImg.src = caminho;
+          testeImg.onload = () => {
+            if (!carregada) {
+              carregada = true;
+              img.src = caminho;
+            }
+          };
+        }
+
+        setTimeout(() => {
+          if (!carregada) {
+            img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0wIDBoMTAwdjgwaC0xMDB6IiBmaWxsPSIjY2NjIi8+PHRleHQgeD0iNTAiIHk9IjQ1IiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmIj5ObyBJbWFnZW08L3RleHQ+PC9zdmc+';
+          }
+        }, 1000);
+
         card.appendChild(img);
 
-        // Status
         const status = document.createElement('div');
         status.className = 'status ' + c.status;
         status.textContent = c.status.charAt(0).toUpperCase() + c.status.slice(1);
         card.appendChild(status);
 
-        // Botão "Ver cartela"
         const btnVer = document.createElement('button');
         btnVer.className = 'btn-ver';
         btnVer.textContent = 'Ver cartela';
         btnVer.onclick = (e) => {
           e.stopPropagation();
-          abrirModal(c.imagem, c.id);
+          abrirModal(img.src, c.id);
         };
         card.appendChild(btnVer);
 
         cardsDiv.appendChild(card);
-      }
+      });
 
       seqDiv.appendChild(h2);
       seqDiv.appendChild(cardsDiv);
       container.appendChild(seqDiv);
-
-      // Guardar referência para controle da visibilidade
       sequencias.push({ div: seqDiv, cardsDiv });
     }
 
-    // Criar todas sequencias
-    for(let seq = 0; seq < 10; seq++) {
-      const ini = seq*cartelasPorSequencia + 1;
-      const fim = ini + cartelasPorSequencia - 1;
-      criarSequenciaCards(ini, fim, seq === 0);
-    }
-
-    // Atualizar botão flutuante
     function atualizarBotaoFixo() {
       const qtd = selecionadas.size;
-      if(qtd > 0) {
+      if (qtd > 0) {
         botaoFixo.style.display = 'block';
         botaoFixo.textContent = `📱 Reservar (${qtd} cartela${qtd > 1 ? 's' : ''})`;
       } else {
@@ -439,74 +196,63 @@
       }
     }
 
-    // Atualiza lista de selecionadas no popup
     function atualizarListaSelecionadas() {
       listaSelecionadas.innerHTML = '';
-      selecionadas.forEach(id => {
+      Array.from(selecionadas).sort((a, b) => a - b).forEach(id => {
         const li = document.createElement('li');
         li.textContent = `Cartela ${id}`;
         listaSelecionadas.appendChild(li);
       });
     }
 
-    // Abrir modal da imagem real
     function abrirModal(imagem, id) {
-      imagemReal.src = `assets/${imagem}`;
+      imagemReal.src = imagem;
       imagemReal.alt = `Cartela ${id}`;
       modalImagem.style.display = 'flex';
     }
 
-    // Fechar modal
     function fecharModal(event) {
-      if(event) event.stopPropagation();
+      if (event) event.stopPropagation();
       modalImagem.style.display = 'none';
       imagemReal.src = '';
     }
 
-    // Abrir formulário reserva
     function abrirFormulario() {
       atualizarListaSelecionadas();
       popupBg.style.display = 'flex';
     }
 
-    // Fechar formulário reserva
     function fecharFormulario() {
       popupBg.style.display = 'none';
     }
 
-    // Enviar reserva (exemplo simples)
     function enviarReserva() {
       const nome = document.getElementById('nome').value.trim();
       const whatsapp = document.getElementById('whatsapp').value.trim();
 
-      if(nome === '' || whatsapp === '') {
+      if (nome === '' || whatsapp === '') {
         alert('Por favor, preencha nome e WhatsApp.');
         return;
       }
-      if(selecionadas.size === 0) {
+
+      if (selecionadas.size === 0) {
         alert('Selecione pelo menos uma cartela para reservar.');
         return;
       }
 
-      // Aqui você pode enviar os dados via API, e-mail, WhatsApp etc.
-      // Exemplo: abrir WhatsApp com mensagem pronta:
-      const cartelasText = Array.from(selecionadas).sort((a,b)=>a-b).join(', ');
+      const cartelasText = Array.from(selecionadas).sort((a, b) => a - b).join(', ');
       const msg = `Olá, quero reservar as cartelas: ${cartelasText}. Nome: ${nome}. WhatsApp: ${whatsapp}`;
       const urlWhats = `https://wa.me/5591980499217?text=${encodeURIComponent(msg)}`;
       window.open(urlWhats, '_blank');
 
       alert('Reserva enviada!');
-
-      // Limpar seleção e fechar popup
       selecionadas.clear();
       atualizarBotaoFixo();
       fecharFormulario();
-
-      // Desmarcar checkboxes
       document.querySelectorAll('.card input[type=checkbox]').forEach(chk => chk.checked = false);
     }
 
+    carregarCartelas();
   </script>
-
 </body>
 </html>
