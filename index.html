@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bingão do Caranguejo</title>
   <style>
-    /* ... (todo o seu CSS permanece igual) ... */
+    
 body {
       font-family: sans-serif;
       background: #f4f4f4;
@@ -30,18 +30,15 @@ body {
       gap: 20px;
       justify-content: center;
     }
-
-    .card {
-      background: #ccc;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 15px;
-      width: 100px;
-      box-sizing: border-box;
-      text-align: center;
-      position: relative;
-    }
-
+.card {
+  flex: 1 1 200px;
+  max-width: 250px;
+  background: #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+}
     .card input[type="checkbox"] {
       position: absolute;
       top: 10px;
