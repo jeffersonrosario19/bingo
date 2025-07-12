@@ -32,6 +32,11 @@
       margin-bottom: 8px;
     }
 
+    h3 {
+      text-align: center;
+      margin-bottom: none;
+    }
+
     .subtitulo {
       text-align: center;
       font-size: 1.1rem;
@@ -119,7 +124,7 @@
       position: absolute;
       top: 10px;
       left: 38px;
-      font-weight: 700;
+      font-weight: bold;
       font-size: 15px;
       color: #34495e;
       user-select: none;
@@ -141,8 +146,8 @@
     }
 
     .status {
-      font-weight: 600;
-      font-size: 13px;
+      font-weight: bold;
+      font-size: 14px;
       margin-bottom: 8px;
       user-select: none;
     }
@@ -182,10 +187,10 @@
       animation: fadeIn 0.3s ease forwards;
     }
     #modalConteudo {
-      background: #fefefe;
+      background: #ffffff;
       border-radius: 14px;
-      max-width: 90vw;
-      max-height: 90vh;
+      max-width: 80vw;
+      max-height: 80vh;
       position: relative;
       box-sizing: border-box;
       display: flex;
@@ -269,11 +274,10 @@
       box-sizing: border-box;
     }
     #popup {
-      background: white;
+      background: rgb(235, 217, 62);
       padding: 25px 25px 35px 25px;
       border-radius: 12px;
       width: 100%;
-      max-width: 420px;
       position: relative;
       box-sizing: border-box;
       box-shadow: 0 8px 24px rgba(0,0,0,0.15);
@@ -283,8 +287,8 @@
     #listaSelecionadas {
       max-height: 90px;
       overflow-y: auto;
-      margin: 12px 0;
-      padding: 8px 12px;
+      margin: 10px 0;
+      padding: 5px 12px;
       border: 1.8px solid #d0d7e0;
       border-radius: 8px;
       list-style: none;
@@ -292,10 +296,11 @@
       color: #34495e;
       font-weight: 600;
       user-select: none;
+      background: #ffffff;
     }
     #listaSelecionadas li {
-      margin-left: 8px;
-      padding: 6px 0;
+      margin-left: 5px;
+      padding: 2px 0;
       border-bottom: 1px solid #e1e6f0;
     }
     #listaSelecionadas li:last-child {
@@ -303,8 +308,8 @@
     }
     #popup input {
       width: 100%;
-      padding: 12px 14px;
-      margin: 8px 0 14px 0;
+      padding: 8px 12px;
+      margin: 4px 0 12px 0;
       border: 1.8px solid #cbd5e1;
       border-radius: 8px;
       font-size: 1rem;
@@ -371,8 +376,7 @@
         height: 70px;
       }
       #popup {
-        padding: 18px 15px 25px 15px;
-        max-width: 90vw;
+        padding: 15px;
         font-size: 0.9rem;
       }
       #botaoFixo {
