@@ -15,48 +15,46 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #f5f7fa;
-      color: #333;
-      padding: 10px 15px 70px; /* espaçamento inferior para botão fixo */
-      margin: 0;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(135deg, #ba9a33 0%, #e5d092 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    padding: 10px 15px 70px; /* espaçamento inferior para botão fixo */
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     }
 
     h1 {
       text-align: center;
-      font-weight: 600;
-      font-size: 2.2rem;
+      font-size: 2rem;
       margin-bottom: 8px;
-      color: #2c3e50;
     }
 
     .subtitulo {
       text-align: center;
       font-size: 1.1rem;
-      margin-bottom: 35px;
-      color: #666f80;
+      margin-bottom: 20px;
     }
 
     /* Sequência e cards */
     .sequencia {
-      margin-bottom: 25px;
+      margin-bottom: 10px;
     }
     .sequencia h2 {
       cursor: pointer;
-      background: #dceefc;
+      background: #ffffe9;
       padding: 10px 14px;
       margin: 0 0 10px 0;
       border-radius: 8px;
       user-select: none;
-      font-weight: 600;
-      color: #1b74e4;
-      box-shadow: 0 1px 3px rgba(27,116,228,0.25);
+      font-weight: bold;
+      color: #b9b716;
       transition: background-color 0.3s ease;
     }
     .sequencia h2:hover {
-      background: #c4ddfd;
+      background: #d0ffd0;
     }
     .cards-scroll {
       display: flex;
@@ -385,7 +383,7 @@
   </style>
 </head>
 <body>
-
+<img src="assets/logo.png" alt="Logo Bingão" style="max-width: 360px; display: block; margin: 0 auto 10px;" />
   <h1>Bingão do Caranguejo</h1>
   <p class="subtitulo">Escolha já a sua cartela e concorra a valiosos prêmios!</p>
 
@@ -405,7 +403,7 @@
   <!-- Popup Formulário reserva -->
   <div id="popup-bg">
     <div id="popup">
-      <button id="fechar" onclick="fecharFormulario()">×</button>
+      <button id="fechar" onclick="fecharFormulario()">X</button>
       <h3>Reservar Cartelas</h3>
       <p>Cartelas selecionadas:</p>
       <ul id="listaSelecionadas"></ul>
