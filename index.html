@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ba9a33" />
   <title>Bingão do Caranguejo</title>
   
   <!-- Fonte Google Fonts: Poppins -->
@@ -186,10 +187,10 @@
       animation: fadeIn 0.3s ease forwards;
     }
     #modalConteudo {
+      width: 100%;
+      max-width: 420px;
       background: #ffffff;
       border-radius: 14px;
-      max-width: 80vw;
-      max-height: 80vh;
       position: relative;
       box-sizing: border-box;
       display: flex;
@@ -208,9 +209,10 @@
     }
     #fecharModal {
       position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 10px;
+      right: 10px;
+      left: auto;
+      transform: none;
       background: #e74c3c;
       color: white;
       border: none;
@@ -273,10 +275,11 @@
       box-sizing: border-box;
     }
     #popup {
+      max-width: 480px;
+      width: 100%;
       background: rgb(235, 217, 62);
       padding: 25px 25px 35px 25px;
       border-radius: 12px;
-      width: 100%;
       position: relative;
       box-sizing: border-box;
       box-shadow: 0 8px 24px rgba(0,0,0,0.15);
@@ -366,27 +369,72 @@
     }
 
     /* Responsividade */
-    @media (max-width: 480px) {
-      .card {
-        flex: 0 0 90px;
-        padding: 8px 6px 10px 6px;
-      }
-      .card img {
-        height: 70px;
-      }
-      #popup {
-        padding: 15px;
-        font-size: 0.9rem;
-      }
-      #botaoFixo {
-        font-size: 16px;
-        padding: 14px 0;
-      }
-    }
+   @media (max-width: 480px) {
+  .card {
+    flex: 0 0 90px;
+    padding: 8px 6px 10px 6px;
+  }
+
+  .card img {
+    height: 70px;
+  }
+
+  #popup {
+    padding: 15px;
+    font-size: 0.9rem;
+    max-width: 100%;
+  }
+
+  #botaoFixo {
+    font-size: 16px;
+    padding: 14px 0;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .subtitulo {
+    font-size: 1rem;
+  }
+}
+/* Responsividade */
+ @media (max-width: 360px) {
+  .card {
+    flex: 0 0 80px;
+    padding: 6px 4px 8px 4px;
+  }
+
+  .card img {
+    height: 60px;
+  }
+
+  #botaoFixo {
+    font-size: 15px;
+    padding: 12px 0;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .subtitulo {
+    font-size: 0.95rem;
+  }
+
+  #popup input {
+    font-size: 0.9rem;
+  }
+
+  .btn-reservar {
+    font-size: 1rem;
+    padding: 12px 0;
+  }
+}  
   </style>
 </head>
 <body>
-<img src="assets/logo.svg" alt="Logo Bingão" style="max-width: 360px; display: block; margin: 0 auto 10px;" />
+  <img src="assets/logo.svg" alt="Logo Bingão" style="max-width: 100%; height: auto; display: block; margin: 0 auto 10px;" />
   <h1>Bingão do Caranguejo</h1>
   <p class="subtitulo">Escolha já a sua cartela e concorra a valiosos prêmios!</p>
 
