@@ -242,12 +242,11 @@
       width: 100%;
       background-color: #0118e7;
       color: white;
-      padding: 16px 0;
+      padding: 12px 0;
       font-size: 18px;
-      font-weight: 600;
+      font-weight: bold;
       border: none;
       cursor: pointer;
-      box-shadow: 0 -3px 12px rgba(39,174,96,0.5);
       z-index: 1100;
       border-radius: 0;
       display: none; /* aparece só quando selecionar cartelas */
@@ -323,27 +322,26 @@
       box-shadow: 0 0 6px rgba(27,116,228,0.5);
       outline: none;
     }
-    .btn-reservar {
+    .btn-comprar {
       width: 100%;
       margin-top: 12px;
-      padding: 14px 0;
+      padding: 10px 0;
       background: #2c9ab7;
       color: white;
       border: none;
       border-radius: 10px;
       font-size: 1.1rem;
-      font-weight: 700;
+      font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(27,116,228,0.7);
       transition: background-color 0.3s ease, box-shadow 0.3s ease;
       user-select: none;
     }
 
-.btn-reservar {
+.btn-comprar {
   background: #2c9ab7; /* azul oceano */
   color: white;
 }
-    .btn-reservar:hover {
+    .btn-comprar:hover {
       background: #217b90;
     }
     #fechar {
@@ -398,7 +396,6 @@
   h1 {
     font-size: 1.8rem;
   }
-
   .subtitulo {
     font-size: 1rem;
   }
@@ -431,9 +428,9 @@
     font-size: 0.9rem;
   }
 
-  .btn-reservar {
+  .btn-comprar {
     font-size: 1rem;
-    padding: 12px 0;
+    padding: 10px 0;
   }
 }  
 #cartelas {
@@ -480,7 +477,7 @@
       <p style="font-size: 0.9rem; color: #555; margin-top: 10px;">
   🔒 <strong>Privacidade:</strong> Seus dados serão usados apenas para cadastro e conferência das cartelas compradas no Bingão do Caranguejo. Não serão compartilhados com terceiros.
 </p>
-      <button class="btn-reservar" onclick="enviarCompra()">Finalizar compra pelo WhatsApp</button>
+      <button class="btn-comprar" onclick="enviarCompra()">Finalizar compra pelo WhatsApp</button>
     </div>
   </div>
 
@@ -596,7 +593,7 @@
 
         setTimeout(() => {
           if (!carregada) {
-            img.src = 'assets/placeholder.svg';
+            img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0wIDBoMTAwdjgwaC0xMDB6IiBmaWxsPSIjY2NjIi8+PHRleHQgeD0iNTAiIHk9IjQ1IiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmIj5ObyBJbWFnZW08L3RleHQ+PC9zdmc+';
           }
         }, 1200);
 
