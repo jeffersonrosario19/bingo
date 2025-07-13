@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -449,7 +448,9 @@
   <p class="subtitulo">Escolha já a sua cartela e concorra a valiosos prêmios!</p>
 
   <div id="cartelas"></div>
-
+  <!-- mensagem -->
+   <p style="margin-bottom: 12px; font-size: 0.85rem; color: #555; text-align: center; max-width: 300px; margin-left: auto; margin-right: auto;">
+  🎯 Organização: <strong>Associação Ambiental e Cultural de Santarém Novo</strong></p>
   <!-- Botão fixo no rodapé -->
   <button id="botaoFixo" onclick="abrirFormulario()">🛒 Comprar (0 cartelas)</button>
 
@@ -475,11 +476,11 @@
       <label for="cidade">Cidade:</label><br/>
       <input type="text" id="cidade" placeholder="Sua cidade" /><br/>
       <label for="whatsapp">WhatsApp:</label><br/>
-      <input type="text" id="whatsapp" placeholder="Seu WhatsApp" /><br/>
+      <input type="text" id="whatsapp" placeholder="Seu WhatsApp com DDD 91988889999" /><br/>
       <p style="font-size: 0.9rem; color: #555; margin-top: 10px;">
   🔒 <strong>Privacidade:</strong> Seus dados serão usados apenas para cadastro e conferência das cartelas compradas no Bingão do Caranguejo. Não serão compartilhados com terceiros.
 </p>
-      <button class="btn-reservar" onclick="enviarReserva()">Finalizar compra pelo WhatsApp</button>
+      <button class="btn-reservar" onclick="enviarCompra()">Finalizar compra pelo WhatsApp</button>
     </div>
   </div>
 
@@ -686,10 +687,10 @@
         alert('Por favor, preencha sua cidade.');
         return false;
       }
-      if (!whatsapp) {
-        alert('Por favor, preencha seu WhatsApp.');
-        return false;
-      }
+      if (!/^\d{9,}$/.test(whatsapp)) {
+  alert('Informe um número de WhatsApp válido (apenas números, com pelo menos 9 dígitos).');
+  return false;
+}
       return true;
     }
 
@@ -727,5 +728,6 @@
 
     carregarCartelas();
   </script>
+
 </body>
 </html>
