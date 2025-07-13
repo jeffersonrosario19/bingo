@@ -84,16 +84,16 @@
 
     /* Card */
     .card {
-      flex: 0 0 120px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      padding: 10px 8px 14px 8px;
-      text-align: center;
-      position: relative;
-      user-select: none;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+  flex: 0 0 160px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 10px 8px 14px 8px;
+  text-align: center;
+  position: relative;
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
     .card:hover:not(.disabled) {
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(27,116,228,0.15);
@@ -126,7 +126,7 @@
       left: 38px;
       font-weight: bold;
       font-size: 15px;
-      color: #34495e;
+      color: #0400d3;
       user-select: none;
       pointer-events: none;
       z-index: 1;
@@ -240,7 +240,7 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      background-color: #27ae60;
+      background-color: #0118e7;
       color: white;
       padding: 16px 0;
       font-size: 18px;
@@ -278,7 +278,7 @@
       max-width: 480px;
       width: 100%;
       background: rgb(235, 217, 62);
-      padding: 25px 25px 35px 25px;
+      padding: 20px 25px 35px 25px;
       border-radius: 12px;
       position: relative;
       box-sizing: border-box;
@@ -343,22 +343,23 @@
       box-shadow: 0 6px 18px rgba(21,93,184,0.85);
     }
     #fechar {
-      position: absolute;
-      top: -12px;
-      right: -12px;
-      background: #e74c3c;
-      color: white;
-      border: none;
-      font-size: 24px;
-      font-weight: 700;
-      cursor: pointer;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-      user-select: none;
-      transition: background-color 0.25s ease;
-    }
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  user-select: none;
+  transition: background-color 0.25s ease;
+}
+
     #fechar:hover {
       background: #c0392b;
     }
@@ -431,6 +432,10 @@
     padding: 12px 0;
   }
 }  
+#cartelas {
+  margin-bottom: 100px;
+}
+
   </style>
 </head>
 <body>
