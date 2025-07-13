@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -350,7 +351,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #e74c3c;
+  background: #e85c4f;
   color: white;
   border: none;
   font-size: 24px;
@@ -365,7 +366,7 @@
 }
 
     #fechar:hover {
-      background: #c0392b;
+      background: #c94339;
     }
 
     @keyframes fadeIn {
@@ -450,7 +451,7 @@
   <div id="cartelas"></div>
 
   <!-- Botão fixo no rodapé -->
-  <button id="botaoFixo" onclick="abrirFormulario()">📱 Reservar (0 cartelas)</button>
+  <button id="botaoFixo" onclick="abrirFormulario()">🛒 Comprar (0 cartelas)</button>
 
   <!-- Modal da imagem real -->
   <div id="modalImagem" onclick="fecharModal(event)">
@@ -464,7 +465,7 @@
   <div id="popup-bg">
     <div id="popup">
       <button id="fechar" onclick="fecharFormulario()">X</button>
-      <h3>Reservar Cartelas</h3>
+      <h3>Comprar Cartelas</h3>
       <p>Cartelas selecionadas:</p>
       <ul id="listaSelecionadas"></ul>
       <label for="nome">Nome completo:</label><br/>
@@ -475,7 +476,10 @@
       <input type="text" id="cidade" placeholder="Sua cidade" /><br/>
       <label for="whatsapp">WhatsApp:</label><br/>
       <input type="text" id="whatsapp" placeholder="Seu WhatsApp" /><br/>
-      <button class="btn-reservar" onclick="enviarReserva()">Enviar Reserva</button>
+      <p style="font-size: 0.9rem; color: #555; margin-top: 10px;">
+  🔒 <strong>Privacidade:</strong> Seus dados serão usados apenas para cadastro e conferência das cartelas compradas no Bingão do Caranguejo. Não serão compartilhados com terceiros.
+</p>
+      <button class="btn-reservar" onclick="enviarReserva()">Finalizar compra pelo WhatsApp</button>
     </div>
   </div>
 
@@ -624,7 +628,7 @@
       const qtd = selecionadas.size;
       if (qtd > 0) {
         botaoFixo.style.display = 'block';
-        botaoFixo.textContent = `📱 Reservar (${qtd} cartela${qtd > 1 ? 's' : ''})`;
+        botaoFixo.textContent = `🛒 Comprar (${qtd} cartela${qtd > 1 ? 's' : ''})`;
       } else {
         botaoFixo.style.display = 'none';
       }
@@ -689,7 +693,7 @@
       return true;
     }
 
-    function enviarReserva() {
+    function enviarCompra() {
       if (!validarCampos()) return;
 
       const nome = document.getElementById('nome').value.trim();
@@ -698,14 +702,14 @@
       const whatsapp = document.getElementById('whatsapp').value.trim();
 
       if (selecionadas.size === 0) {
-        alert('Selecione pelo menos uma cartela para reservar.');
+        alert('Selecione pelo menos uma cartela para comprar.');
         return;
       }
 
       const cartelasText = Array.from(selecionadas).sort((a, b) => a - b).join(', ');
 
       const msg = 
-        `Olá, quero reservar as cartelas: ${cartelasText}.\n` +
+        `Olá, quero comprar a(s) cartela(s): ${cartelasText}.\n` +
         `Nome: ${nome}.\n` +
         `Endereço: ${endereco}.\n` +
         `Cidade: ${cidade}.\n` +
@@ -714,7 +718,7 @@
       const urlWhats = `https://wa.me/5591987577521?text=${encodeURIComponent(msg)}`;
       window.open(urlWhats, '_blank');
 
-      alert('Reserva enviada!');
+      alert('Compra enviada!');
       selecionadas.clear();
       atualizarBotaoFixo();
       fecharFormulario();
@@ -724,5 +728,43 @@
     carregarCartelas();
   </script>
 
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
