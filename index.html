@@ -1,11 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#ba9a33" />
-  <title>Bingão do Caranguejo</title>
-  
+  <title>Bingão do Cartas do Círio</title>
+
   <!-- Fonte Google Fonts: Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
@@ -16,7 +17,7 @@
     }
 
     body {
-    background: linear-gradient(135deg, #ba9a33 0%, #e5d092 100%);
+    background: linear-gradient(135deg, #337dba 0%, #92dbe5 100%);
     background-attachment: fixed;
     background-size: cover;
     color: #ffffff;
@@ -55,7 +56,7 @@
       border-radius: 8px;
       user-select: none;
       font-weight: bold;
-      color: #b9b716;
+      color: #9e16b9;
       transition: background-color 0.3s ease;
     }
     .sequencia h2:hover {
@@ -128,7 +129,11 @@
       left: 38px;
       font-weight: bold;
       font-size: 15px;
-      color: #ffffff;
+      color: #000000;
+      background-color: #d1d1d1;
+      padding: 2px;
+      display: inline-block;
+      border-radius: 5px;
       user-select: none;
       pointer-events: none;
       z-index: 1;
@@ -242,11 +247,10 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      background-color: #0118e7;
+      background-color: #5767fa;
       color: white;
       padding: 12px 0;
       font-size: 18px;
-      font-weight: bold;
       border: none;
       cursor: pointer;
       z-index: 1100;
@@ -333,7 +337,6 @@
       border: none;
       border-radius: 10px;
       font-size: 1.1rem;
-      font-weight: bold;
       cursor: pointer;
       transition: background-color 0.3s ease, box-shadow 0.3s ease;
       user-select: none;
@@ -438,18 +441,20 @@
 #cartelas {
   margin-bottom: 100px;
 }
-
+label {
+  font-size: 0.7rem;
+}
   </style>
 </head>
 <body>
-  <img src="assets/logo.svg" alt="Logo Bingão" style="max-width: 100%; height: auto; display: block; margin: 0 auto 10px;" />
-  <h1>Bingão do Caranguejo</h1>
+  <img src="assets/logo.svg" alt="Logo Bingo" style="max-width: 100%; height: auto; display: block; margin: 0 auto 10px;" />
+  <h1>Bingão do Cartaz do Círio</h1>
   <p class="subtitulo">Escolha já a sua cartela e concorra a valiosos prêmios!</p>
 
   <div id="cartelas"></div>
   <!-- mensagem -->
    <p style="margin-bottom: 12px; font-size: 0.85rem; color: #555; text-align: center; max-width: 300px; margin-left: auto; margin-right: auto;">
-  🎯 Organização: <strong>Associação Ambiental e Cultural de Santarém Novo</strong></p>
+  🎯 Organização: <strong>Paroquia N. Senhora da Conceição de Santarém Novo</strong></p>
   <!-- Botão fixo no rodapé -->
   <button id="botaoFixo" onclick="abrirFormulario()">🛒 Comprar (0 cartelas)</button>
 
@@ -479,7 +484,7 @@
       <p style="font-size: 0.9rem; color: #555; margin-top: 10px;">
   🔒 <strong>Privacidade:</strong> Seus dados serão usados apenas para cadastro e conferência das cartelas compradas no Bingão do Caranguejo. Não serão compartilhados com terceiros.
 </p>
-      <button class="btn-comprar" onclick="enviarCompra()">Finalizar compra pelo WhatsApp</button>
+      <button class="btn-comprar" onclick="enviarCompra()">Finalizar pelo WhatsApp</button>
     </div>
   </div>
 
@@ -582,7 +587,7 @@
         let carregada = false;
 
         for (let ext of formatos) {
-          const caminho = `assets/cart${c.id}.${ext}`;
+          const caminho = `cartelas_${c.id}.${ext}`;
           const testeImg = new Image();
           testeImg.src = caminho;
           testeImg.onload = () => {
@@ -728,5 +733,43 @@
     carregarCartelas();
   </script>
 
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
