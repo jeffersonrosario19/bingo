@@ -372,11 +372,11 @@
     }
 
     const cartelasList = Array.from(selecionadas).sort((a, b) => a - b).map(id => `Cartela ${id}`).join(', ');
-
+const whatsapp = "5591987577521";
     const mensagem = `Olá! Gostaria de comprar as seguintes cartelas:\n${cartelasList}\n\n` +
       `Nome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nWhatsApp: ${whatsapp}`;
 
-    const urlWhatsApp = `https://wa.me/${whatsapp.replace(/\D/g, '91987577521')}?text=${encodeURIComponent(mensagem)}`;
+    const urlWhatsApp = `https://wa.me/${whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(mensagem)}`;
 
     window.open(urlWhatsApp, '_blank');
 
