@@ -361,27 +361,41 @@
   }
 
   function enviarCompra() {
-    const nome = document.getElementById('nome').value.trim();
-    const endereco = document.getElementById('endereco').value.trim();
-    const cidade = document.getElementById('cidade').value.trim();
-    const whatsapp = document.getElementById('whatsapp').value.trim();
+  const nome = document.getElementById('nome').value.trim();
+  const endereco = document.getElementById('endereco').value.trim();
+  const cidade = document.getElementById('cidade').value.trim();
+  let whatsappCliente = document.getElementById('whatsapp').value.trim();
 
-    if (!nome || !endereco || !cidade || !whatsapp) {
-      alert('Por favor, preencha todos os campos.');
-      return;
-    }
-
-    const cartelasList = Array.from(selecionadas).sort((a, b) => a - b).map(id => `Cartela ${id}`).join(', ');
-const whatsapp = "5591987577521";
-    const mensagem = `Olá! Gostaria de comprar as seguintes cartelas:\n${cartelasList}\n\n` +
-      `Nome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nWhatsApp: ${whatsapp}`;
-
-    const urlWhatsApp = `https://wa.me/${whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(mensagem)}`;
-
-    window.open(urlWhatsApp, '_blank');
-
-    fecharFormulario();
+  if (!nome || !endereco || !cidade || !whatsappCliente) {
+    alert('Por favor, preencha todos os campos.');
+    return;
   }
+
+  // Remove tudo que não for número
+  whatsappCliente = whatsappCliente.replace(/\D/g, '');
+
+  // Validação básica de tamanho (10 ou 11 dígitos no Brasil)
+  if (whatsappCliente.length < 10 || whatsappCliente.length > 11) {
+    alert('Digite um número de WhatsApp válido com DDD (ex: 91980000000).');
+    return;
+  }
+
+  const cartelasList = Array.from(selecionadas)
+    .sort((a, b) => a - b)
+    .map(id => `Cartela ${id}`)
+    .join(', ');
+
+  // Número fixo do responsável (seu número destino)
+  const numeroDestino = "5591987577521";
+
+  const mensagem = `Olá! Gostaria de comprar as seguintes cartelas:\n${cartelasList}\n\n` +
+    `Nome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nWhatsApp: ${whatsappCliente}`;
+
+  const urlWhatsApp = `https://wa.me/${numeroDestino}?text=${encodeURIComponent(mensagem)}`;
+
+  window.open(urlWhatsApp, '_blank');
+  fecharFormulario();
+}
 
   // Carregar as cartelas ao abrir a página
   carregarCartelas();
