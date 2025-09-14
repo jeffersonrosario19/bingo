@@ -15,7 +15,7 @@
       padding-bottom: 100px;
     }
     h1 { text-align: center; font-size: 2rem; margin-bottom: 0.25rem; }
-    .logo { display: block; margin: 0 auto 1rem; max-width: 180px; }
+    .logo { display: block; margin: 0 auto 1rem; max-width: 80px; }
     .subtitulo { text-align: center; font-size: 1rem; margin-bottom: 0.75rem; color: #fff8e1; }
     .frase-final { text-align: center; margin-top: 1rem; font-size: 0.9rem; font-style: italic; color: #ffe; }
     .endereco { text-align: center; margin-top: 0.5rem; font-size: 0.9rem; }
@@ -376,7 +376,7 @@
     const mensagem = `Olá! Gostaria de comprar as seguintes cartelas:\n${cartelasList}\n\n` +
       `Nome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nWhatsApp: ${whatsapp}`;
 
-    const urlWhatsApp = `https://wa.me/${whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(mensagem)}`;
+    const urlWhatsApp = `https://wa.me/${whatsapp.replace(/\D/g, '91987577521')}?text=${encodeURIComponent(mensagem)}`;
 
     window.open(urlWhatsApp, '_blank');
 
