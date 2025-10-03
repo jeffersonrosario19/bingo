@@ -248,18 +248,18 @@
     h2.textContent = `Cartelas de ${ini} a ${fim}`;
     h2.style.cursor = 'pointer';
 
-    h2.onclick = () => {
+    /* h2.onclick = () => {
       // esconder todos os outros grupos
       document.querySelectorAll('.sequencia .cards-scroll').forEach(div => {
         if (div.parentNode !== seqDiv) div.style.display = 'none';
       });
       const atual = seqDiv.querySelector('.cards-scroll');
       atual.style.display = (atual.style.display === 'flex' ? 'none' : 'flex');
-    };
+    };*/
 
     const cardsDiv = document.createElement('div');
     cardsDiv.className = 'cards-scroll';
-    cardsDiv.style.display = ativa ? 'flex' : 'none';
+    cardsDiv.style.display = 'flex';
 
     cartelasDoGrupo.forEach(c => {
       const card = document.createElement('div');
@@ -399,6 +399,8 @@
 
   // Carregar as cartelas ao abrir a página
   carregarCartelas();
+
+  
   </script>
 </body>
 </html>
