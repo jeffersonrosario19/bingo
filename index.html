@@ -26,7 +26,6 @@
       padding: 0.5rem 1rem;
       border-radius: 8px;
       text-align: center;
-      cursor: pointer;
     }
     .cards-scroll {
       display: flex;
@@ -35,6 +34,7 @@
       gap: 0.75rem;
       padding: 0.75rem 0;
       scroll-behavior: smooth;
+      position: relative;
     }
     .card {
       flex: 0 0 160px;
@@ -51,6 +51,22 @@
       background: #f5f5f5;
       pointer-events: none;
     }
+    .cards-scroll::after {
+  content: "➡";
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: rgba(0,0,0,0.4);
+  pointer-events: none;
+  animation: pisca 1s infinite alternate;
+}
+
+@keyframes pisca {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
     .card input[type="checkbox"] {
       position: absolute;
       top: 10px;
@@ -162,6 +178,14 @@
       .card { flex: 0 0 120px; }
       .card img { height: 100px; }
     }
+    .scroll-hint {
+  font-size: 0.9rem;
+  color: #555;
+  text-align: center;
+  margin: 10px 0;
+  font-style: italic;
+}
+
   </style>
 </head>
 <body>
@@ -169,9 +193,9 @@
   <img src="assets/logo.png" class="logo" alt="Logo do Bingão" />
   <h1>Bingão da Comunidade São Francisco</h1>
   <p class="subtitulo">Participe do nosso Bingão e ajude a fortalecer a missão da nossa igreja!</p>
-
+  <p class="scroll-hint">➡️ Arraste para o lado para ver mais cartelas</p>
   <div id="cartelas"></div>
-
+  
   <p class="frase-final">🙏 Toda arrecadação será destinada a melhorias estruturais da igreja e benfeitorias missionárias da Comunidade.</p>
   <p class="endereco">📍 Vila de Brasileiro – Santarém Novo</p>
 
@@ -230,7 +254,7 @@
       const totalSequencias = Math.ceil(cartelas.length / cartelasPorSequencia);
       for (let i = 0; i < totalSequencias; i++) {
         const grupo = cartelas.slice(i * cartelasPorSequencia, (i + 1) * cartelasPorSequencia);
-        criarSequenciaCards(grupo, i === 0);
+        criarSequenciaCards(grupo);
       }
     } catch (erro) {
       console.error('Erro ao carregar o CSV:', erro);
@@ -238,7 +262,7 @@
     }
   }
 
-  function criarSequenciaCards(cartelasDoGrupo, ativa = false) {
+  function criarSequenciaCards(cartelasDoGrupo) {
     const seqDiv = document.createElement('div');
     seqDiv.className = 'sequencia';
 
@@ -246,27 +270,17 @@
     const ini = cartelasDoGrupo[0].id;
     const fim = cartelasDoGrupo[cartelasDoGrupo.length - 1].id;
     h2.textContent = `Cartelas de ${ini} a ${fim}`;
-    h2.style.cursor = 'pointer';
-
-    /* h2.onclick = () => {
-      // esconder todos os outros grupos
-      document.querySelectorAll('.sequencia .cards-scroll').forEach(div => {
-        if (div.parentNode !== seqDiv) div.style.display = 'none';
-      });
-      const atual = seqDiv.querySelector('.cards-scroll');
-      atual.style.display = (atual.style.display === 'flex' ? 'none' : 'flex');
-    };*/
 
     const cardsDiv = document.createElement('div');
     cardsDiv.className = 'cards-scroll';
-    cardsDiv.style.display = 'flex';
+    cardsDiv.style.display = 'flex'; // sempre visível
 
     cartelasDoGrupo.forEach(c => {
       const card = document.createElement('div');
       card.className = 'card';
       if (c.status !== 'livre') card.classList.add('disabled');
 
-      // Checkbox individual
+      // Checkbox
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.id = `chk-${c.id}`;
@@ -281,7 +295,7 @@
       };
       card.appendChild(checkbox);
 
-      // Número da cartela
+      // Número
       const numeroEl = document.createElement('div');
       numeroEl.className = 'numero-cartela';
       numeroEl.textContent = c.id;
@@ -292,9 +306,7 @@
       img.alt = `Cartela ${c.id}`;
       const caminho = `assets/${c.id}.jpg`;
       img.src = caminho;
-      img.onerror = () => {
-        img.src = IMG_FALLBACK;
-      };
+      img.onerror = () => { img.src = IMG_FALLBACK; };
       img.onclick = () => abrirModal(img.src, c.id);
       card.appendChild(img);
 
@@ -361,46 +373,39 @@
   }
 
   function enviarCompra() {
-  const nome = document.getElementById('nome').value.trim();
-  const endereco = document.getElementById('endereco').value.trim();
-  const cidade = document.getElementById('cidade').value.trim();
-  let whatsappCliente = document.getElementById('whatsapp').value.trim();
+    const nome = document.getElementById('nome').value.trim();
+    const endereco = document.getElementById('endereco').value.trim();
+    const cidade = document.getElementById('cidade').value.trim();
+    let whatsappCliente = document.getElementById('whatsapp').value.trim();
 
-  if (!nome || !endereco || !cidade || !whatsappCliente) {
-    alert('Por favor, preencha todos os campos.');
-    return;
+    if (!nome || !endereco || !cidade || !whatsappCliente) {
+      alert('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    whatsappCliente = whatsappCliente.replace(/\D/g, '');
+    if (whatsappCliente.length < 10 || whatsappCliente.length > 11) {
+      alert('Digite um número de WhatsApp válido com DDD (ex: 91980000000).');
+      return;
+    }
+
+    const cartelasList = Array.from(selecionadas)
+      .sort((a, b) => a - b)
+      .map(id => `Cartela ${id}`)
+      .join(', ');
+
+    const numeroDestino = "5591987577521";
+
+    const mensagem = `Olá! Gostaria de comprar as seguintes cartelas:\n${cartelasList}\n\n` +
+      `Nome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nWhatsApp: ${whatsappCliente}`;
+
+    const urlWhatsApp = `https://wa.me/${numeroDestino}?text=${encodeURIComponent(mensagem)}`;
+
+    window.open(urlWhatsApp, '_blank');
+    fecharFormulario();
   }
 
-  // Remove tudo que não for número
-  whatsappCliente = whatsappCliente.replace(/\D/g, '');
-
-  // Validação básica de tamanho (10 ou 11 dígitos no Brasil)
-  if (whatsappCliente.length < 10 || whatsappCliente.length > 11) {
-    alert('Digite um número de WhatsApp válido com DDD (ex: 91980000000).');
-    return;
-  }
-
-  const cartelasList = Array.from(selecionadas)
-    .sort((a, b) => a - b)
-    .map(id => `Cartela ${id}`)
-    .join(', ');
-
-  // Número fixo do responsável (seu número destino)
-  const numeroDestino = "5591987577521";
-
-  const mensagem = `Olá! Gostaria de comprar as seguintes cartelas:\n${cartelasList}\n\n` +
-    `Nome: ${nome}\nEndereço: ${endereco}\nCidade: ${cidade}\nWhatsApp: ${whatsappCliente}`;
-
-  const urlWhatsApp = `https://wa.me/${numeroDestino}?text=${encodeURIComponent(mensagem)}`;
-
-  window.open(urlWhatsApp, '_blank');
-  fecharFormulario();
-}
-
-  // Carregar as cartelas ao abrir a página
   carregarCartelas();
-
-  
   </script>
 </body>
 </html>
